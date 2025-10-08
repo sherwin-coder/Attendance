@@ -32,14 +32,14 @@
                 <span class="block w-16 border-t border-gray-300"></span>
             </div>
 
-            <!-- File Upload for ID Image -->
+            <!-- File Upload for ID Image
             <div class="mb-3">
                 <label for="file-input" class="text-sm font-medium text-gray-700">Upload ID Image:</label>
                 <input type="file" id="file-input" accept="image/*"
                     class="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:ring-indigo-500 focus:border-indigo-500" />
                 <p class="text-sm text-gray-400 mt-1">Upload a clear image of your QR code (JPG, PNG)</p>
 
-            </div>
+            </div> -->
 
             <!-- Status -->
             <div id="status" class="mt-5 text-gray-600 font-medium">
@@ -310,81 +310,81 @@
             }
         }
 
-        // ✅ File Upload with jsQR Fallback
-        fileInput.addEventListener("change", async (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
+        // // ✅ File Upload with jsQR Fallback
+        // fileInput.addEventListener("change", async (event) => {
+        //     const file = event.target.files[0];
+        //     if (!file) return;
 
-            if (isProcessing) {
-                showStatus("Please wait for the current process to finish...", "text-yellow-600");
-                return;
-            }
+        //     if (isProcessing) {
+        //         showStatus("Please wait for the current process to finish...", "text-yellow-600");
+        //         return;
+        //     }
 
-            isProcessing = true;
-            spinner.classList.remove("hidden");
-            showStatus("Analyzing image...", "text-indigo-600");
-            resultBox.innerHTML = "";
+        //     isProcessing = true;
+        //     spinner.classList.remove("hidden");
+        //     showStatus("Analyzing image...", "text-indigo-600");
+        //     resultBox.innerHTML = "";
 
-            try {
-                // Display preview
-                const img = document.createElement("img");
-                img.src = URL.createObjectURL(file);
-                img.alt = "QR Preview";
-                img.style.maxWidth = "200px";
-                img.style.borderRadius = "0.5rem";
-                img.style.marginTop = "10px";
-                resultBox.appendChild(img);
+        //     try {
+        //         // Display preview
+        //         const img = document.createElement("img");
+        //         img.src = URL.createObjectURL(file);
+        //         img.alt = "QR Preview";
+        //         img.style.maxWidth = "200px";
+        //         img.style.borderRadius = "0.5rem";
+        //         img.style.marginTop = "10px";
+        //         resultBox.appendChild(img);
 
-                await new Promise((resolve) => (img.onload = resolve));
+        //         await new Promise((resolve) => (img.onload = resolve));
 
-                let decodedText = null;
+        //         let decodedText = null;
 
-                // --- 1️⃣ Try Html5Qrcode decoding first ---
-                try {
-                    decodedText = await reader.scanFile(file, true);
-                } catch (err) {
-                    console.warn("Html5-Qrcode failed, using jsQR fallback...");
-                }
+        //         // --- 1️⃣ Try Html5Qrcode decoding first ---
+        //         try {
+        //             decodedText = await reader.scanFile(file, true);
+        //         } catch (err) {
+        //             console.warn("Html5-Qrcode failed, using jsQR fallback...");
+        //         }
 
-                // --- 2️⃣ If it fails, try jsQR fallback ---
-                if (!decodedText) {
-                    const canvas = document.createElement("canvas");
-                    const ctx = canvas.getContext("2d");
-                    canvas.width = img.naturalWidth;
-                    canvas.height = img.naturalHeight;
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        //         // --- 2️⃣ If it fails, try jsQR fallback ---
+        //         if (!decodedText) {
+        //             const canvas = document.createElement("canvas");
+        //             const ctx = canvas.getContext("2d");
+        //             canvas.width = img.naturalWidth;
+        //             canvas.height = img.naturalHeight;
+        //             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                    // Get image data for jsQR
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                        inversionAttempts: "attemptBoth",
-                    });
+        //             // Get image data for jsQR
+        //             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        //             const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        //                 inversionAttempts: "attemptBoth",
+        //             });
 
-                    if (code) {
-                        decodedText = code.data;
-                    }
-                }
+        //             if (code) {
+        //                 decodedText = code.data;
+        //             }
+        //         }
 
-                spinner.classList.add("hidden");
+        //         spinner.classList.add("hidden");
 
-                if (decodedText) {
-                    flashBorder("success");
-                    showStatus("QR detected — processing...", "text-green-600");
-                    await processDecodedQRCode(decodedText);
-                } else {
-                    flashBorder("error");
-                    showResult("❌ Unable to detect QR. Try another image.", "text-red-600");
-                    showStatus("Ensure the QR is clear and centered.", "text-gray-600");
-                    isProcessing = false;
-                }
-            } catch (err) {
-                spinner.classList.add("hidden");
-                flashBorder("error");
-                showResult("❌ Error reading image.", "text-red-600");
-                console.error("File scan failed:", err);
-                isProcessing = false;
-            }
-        });
+        //         if (decodedText) {
+        //             flashBorder("success");
+        //             showStatus("QR detected — processing...", "text-green-600");
+        //             await processDecodedQRCode(decodedText);
+        //         } else {
+        //             flashBorder("error");
+        //             showResult("❌ Unable to detect QR. Try another image.", "text-red-600");
+        //             showStatus("Ensure the QR is clear and centered.", "text-gray-600");
+        //             isProcessing = false;
+        //         }
+        //     } catch (err) {
+        //         spinner.classList.add("hidden");
+        //         flashBorder("error");
+        //         showResult("❌ Error reading image.", "text-red-600");
+        //         console.error("File scan failed:", err);
+        //         isProcessing = false;
+        //     }
+        // });
 
     </script>
 </x-app-layout>
