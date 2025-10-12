@@ -21,6 +21,7 @@ class AttendanceController extends Controller
         $studentno = $request->input('studentno');
         $user = User::where('studentno', $studentno)->first();
 
+
         if (!$user) {
             return response()->json(['status' => 'error', 'message' => 'Student not found']);
         }
@@ -44,4 +45,11 @@ class AttendanceController extends Controller
             return response()->json(['status' => 'info', 'message' => 'Already timed in and out today']);
         }
     }
+
+    public function logs()
+    {
+        $logs = Attendance::with('user')->orderBy('date', 'desc')->paginate(10);
+        return view('attendancelogs', compact('logs'));
+    }
+
 }
