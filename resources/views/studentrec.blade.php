@@ -74,9 +74,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin_dashboard') }}">
-              <i class="mdi mdi-chart-bar menu-icon"></i>
-              <span class="menu-title">Reports</span>
+            <a class="nav-link" href="{{ route('subjects.index') }}">
+              <i class="mdi mdi-book-plus menu-icon"></i>
+              <span class="menu-title">Subjects</span>
             </a>
           </li>
           <li class="nav-item">

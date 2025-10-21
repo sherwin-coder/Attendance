@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>QR Attendance Scanner</title>
@@ -14,8 +15,13 @@
 
     <style>
         @keyframes scan {
-            0% { top: 5%; }
-            100% { top: 95%; }
+            0% {
+                top: 5%;
+            }
+
+            100% {
+                top: 95%;
+            }
         }
 
         .animate-scan {
@@ -23,8 +29,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fade-in {
@@ -38,18 +51,39 @@
         }
 
         @keyframes flash-green {
-            0%, 100% { border-color: #6366f1; }
-            50% { border-color: #22c55e; }
+
+            0%,
+            100% {
+                border-color: #6366f1;
+            }
+
+            50% {
+                border-color: #22c55e;
+            }
         }
 
         @keyframes flash-red {
-            0%, 100% { border-color: #6366f1; }
-            50% { border-color: #ef4444; }
+
+            0%,
+            100% {
+                border-color: #6366f1;
+            }
+
+            50% {
+                border-color: #ef4444;
+            }
         }
 
         @keyframes flash-yellow {
-            0%, 100% { border-color: #6366f1; }
-            50% { border-color: #facc15; }
+
+            0%,
+            100% {
+                border-color: #6366f1;
+            }
+
+            50% {
+                border-color: #facc15;
+            }
         }
 
         .flash-success {
@@ -118,23 +152,25 @@
         }
 
         @keyframes overlayFadeIn {
-            from { 
-                opacity: 0; 
+            from {
+                opacity: 0;
                 backdrop-filter: blur(0px);
             }
-            to { 
-                opacity: 1; 
+
+            to {
+                opacity: 1;
                 backdrop-filter: blur(8px);
             }
         }
 
         @keyframes overlayFadeOut {
-            from { 
-                opacity: 1; 
+            from {
+                opacity: 1;
                 backdrop-filter: blur(8px);
             }
-            to { 
-                opacity: 0; 
+
+            to {
+                opacity: 0;
                 backdrop-filter: blur(0px);
             }
         }
@@ -146,10 +182,21 @@
             animation: formSlideUp 0.6s ease forwards;
         }
 
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
-        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.4s;
+        }
 
         @keyframes formSlideUp {
             to {
@@ -172,7 +219,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
 
@@ -201,8 +248,15 @@
 
         /* Floating animation for login button */
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
         }
 
         .float-animation {
@@ -217,21 +271,35 @@
         }
 
         @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         /* Bounce animation for close button */
         @keyframes bounce-gentle {
-            0%, 20%, 53%, 80%, 100% {
-                transform: translate3d(0,0,0);
+
+            0%,
+            20%,
+            53%,
+            80%,
+            100% {
+                transform: translate3d(0, 0, 0);
             }
-            40%, 43% {
+
+            40%,
+            43% {
                 transform: translate3d(0, -8px, 0);
             }
+
             70% {
                 transform: translate3d(0, -4px, 0);
             }
+
             90% {
                 transform: translate3d(0, -2px, 0);
             }
@@ -248,10 +316,12 @@
                 opacity: 0;
                 transform: scale(0.8);
             }
+
             50% {
                 opacity: 1;
                 transform: scale(1.1);
             }
+
             100% {
                 stroke-dashoffset: 0;
                 opacity: 1;
@@ -264,6 +334,7 @@
         }
     </style>
 </head>
+
 <body class="gradient-bg min-h-screen flex flex-col">
 
     <!-- Header -->
@@ -281,25 +352,23 @@
             @if (Route::has('login'))
             <nav class="mt-3 md:mt-0 flex flex-wrap gap-2 justify-center md:justify-end">
                 @auth
-                    <a
-                        href="{{ url('/admin_dashboard') }}"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
+                <a
+                    href="{{ url('/admin_dashboard') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
                 @else
-                    <button
-                        id="login-modal-btn"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover float-animation"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                        </svg>
-                        <span>Login</span>
-                    </button>
+                <button
+                    id="login-modal-btn"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover float-animation">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Login</span>
+                </button>
                 @endauth
             </nav>
             @endif
@@ -338,10 +407,9 @@
                             autofocus
                             autocomplete="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
-                            placeholder="Enter your email"
-                        >
+                            placeholder="Enter your email">
                         @error('email')
-                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -355,10 +423,9 @@
                             required
                             autocomplete="current-password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('password') border-red-500 @enderror"
-                            placeholder="Enter your password"
-                        >
+                            placeholder="Enter your password">
                         @error('password')
-                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -369,15 +436,14 @@
                                 id="remember_me"
                                 type="checkbox"
                                 name="remember"
-                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-colors cursor-pointer"
-                            >
+                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-colors cursor-pointer">
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Remember me</span>
                         </label>
 
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
-                                Forgot your password?
-                            </a>
+                        <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                            Forgot your password?
+                        </a>
                         @endif
                     </div>
 
@@ -385,8 +451,7 @@
                     <button
                         type="submit"
                         class="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover form-group"
-                        id="login-submit"
-                    >
+                        id="login-submit">
                         <span class="flex items-center justify-center">
                             <svg id="login-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -401,11 +466,11 @@
             <!-- Modal Footer -->
             <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 form-group">
                 <p class="text-sm text-gray-600 text-center">
-                    Don't have an account? 
+                    Don't have an account?
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
-                            Create one here
-                        </a>
+                    <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                        Create one here
+                    </a>
                     @endif
                 </p>
             </div>
@@ -442,12 +507,33 @@
                 </div>
             </div>
 
+            <!-- Subject Selector -->
+            <div class="mb-6">
+                <label for="subject-select" class="block text-sm font-medium text-gray-700 mb-2">Select Subject:</label>
+                <div class="relative">
+                    <select id="subject-select"
+                        class="w-full py-3 px-4 pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus">
+                        <option value="">Select a subject...</option>
+                        @foreach ($subjects as $subject)
+                        <option value="{{ $subject->code }}">
+                            {{ $subject->code }} - {{ $subject->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
             <!-- Scanner Frame -->
             <div id="scanner-box"
                 class="mt-2 relative mx-auto w-80 h-80 border-4 border-indigo-500 rounded-2xl overflow-hidden transition-all duration-300 scanner-glow">
                 <div id="reader" class="absolute inset-0"></div>
                 <div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-indigo-500 animate-scan"></div>
-                
+
                 <!-- Scanner corners -->
                 <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-indigo-500 rounded-tl-lg"></div>
                 <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-indigo-500 rounded-tr-lg"></div>
@@ -509,7 +595,7 @@
         function openLoginModal() {
             loginModal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
+
             // Reset form animations
             const formGroups = document.querySelectorAll('.form-group');
             formGroups.forEach(group => {
@@ -550,7 +636,7 @@
             loginSpinner.classList.remove('hidden');
             loginSubmit.disabled = true;
             loginSubmit.classList.add('opacity-75');
-            
+
             // Simulate loading for demo (remove in production)
             setTimeout(() => {
                 loginSpinner.classList.add('hidden');
@@ -564,7 +650,7 @@
             input.addEventListener('focus', function() {
                 this.parentElement.classList.add('transform', 'scale-105');
             });
-            
+
             input.addEventListener('blur', function() {
                 this.parentElement.classList.remove('transform', 'scale-105');
             });
@@ -591,15 +677,28 @@
         async function processDecodedQRCode(decodedText) {
             showStatus("QR detected — processing...", "text-indigo-600");
             spinner.classList.remove("hidden");
+            const selectedSubject = document.getElementById("subject-select").value;
+
+            if (!selectedSubject) {
+                flashBorder("warning");
+                showResult("⚠️ Please select a subject first.", "text-yellow-600");
+                showStatus("Select a subject to continue.", "text-yellow-700");
+                isProcessing = false;
+                await startCamera(currentCameraId);
+                return;
+            }
 
             fetch("{{ route('attendance.scan.post') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ studentno: decodedText })
-            })
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        studentno: decodedText,
+                        subject_code: selectedSubject
+                    })
+                })
                 .then(response => response.json())
                 .then(async (data) => {
                     spinner.classList.add("hidden");
@@ -649,7 +748,9 @@
             await processDecodedQRCode(decodedText);
         }
 
-        function onScanError(errorMessage) { /* silent */ }
+        function onScanError(errorMessage) {
+            /* silent */
+        }
 
         const config = {
             fps: 60,
@@ -657,13 +758,22 @@
             aspectRatio: 1.0,
             videoConstraints: {
                 facingMode: "environment",
-                width: { ideal: 1920 },
-                height: { ideal: 1080 },
+                width: {
+                    ideal: 1920
+                },
+                height: {
+                    ideal: 1080
+                },
                 focusMode: "continuous",
-                advanced: [
-                    { focusMode: "continuous" },
-                    { focusDistance: 5 },
-                    { zoom: 2.0 }
+                advanced: [{
+                        focusMode: "continuous"
+                    },
+                    {
+                        focusDistance: 5
+                    },
+                    {
+                        zoom: 2.0
+                    }
                 ]
             }
         };
@@ -682,10 +792,12 @@
                 startCamera(currentCameraId);
 
                 cameraSelect.addEventListener("change", async (e) => {
-                    const newId = e.target.value;
-                    if (!newId || newId === currentCameraId) return;
-                    await switchCamera(newId);
+                    const selectedCameraId = e.target.value;
+                    if (selectedCameraId && selectedCameraId !== currentCameraId) {
+                        await startCamera(selectedCameraId);
+                    }
                 });
+
             } else {
                 showResult("⚠️ No camera found. Please upload an image instead.", "text-yellow-600");
             }
@@ -696,7 +808,11 @@
 
         async function startCamera(deviceId) {
             try {
-                await reader.start({ deviceId: { exact: deviceId } }, config, onScanSuccess, onScanError);
+                await reader.start({
+                    deviceId: {
+                        exact: deviceId
+                    }
+                }, config, onScanSuccess, onScanError);
                 showStatus("Camera ready. Aim at QR code.", "text-gray-700");
             } catch (err) {
                 console.error("Error starting camera:", err);
@@ -729,4 +845,5 @@
         });
     </script>
 </body>
+
 </html>

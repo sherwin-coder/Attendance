@@ -12,29 +12,27 @@ class AdminDashboardController extends Controller
     {
         $today = Carbon::today();
 
-        // Summary counts
         $totalStudents = User::where('email', '!=', 'admin@gmail.com')->count();
 
-        $presentToday = Attendance::whereDate('date', $today)
-            ->whereNotNull('time_in')
-            ->count();
+        $todayAttendances = Attendance::whereDate('date', $today)->get();
 
-        $lateCount = Attendance::whereDate('date', $today)
-            ->whereTime('time_in', '>', '08:00:00')
-            ->count();
+        $presentToday = $todayAttendances->whereNotNull('time_in')->count();
+
+        $lateCount = $todayAttendances->filter(function ($attendance) {
+            return $attendance->time_in && $attendance->time_in > '08:00:00';
+        })->count();
 
         $absentCount = $totalStudents - $presentToday;
 
-        // Attendance data for chart
-        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat'];
+        $weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         $attendanceData = [];
         foreach ($weekDays as $i => $day) {
             $date = Carbon::now()->startOfWeek()->addDays($i);
             $attendanceData[] = Attendance::whereDate('date', $date)->count();
         }
 
-        // Recent scans
         $recentScans = Attendance::with('user')
+            ->whereDate('date', $today)
             ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get();
@@ -50,3 +48,4 @@ class AdminDashboardController extends Controller
         ));
     }
 }
+    

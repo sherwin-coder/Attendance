@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Admin Dashboard | Smart QR Attendance</title>
+  <title>Add Subject | Smart QR Attendance</title>
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="{{ asset('assets/vendors/feather/feather.css') }}">
@@ -20,9 +20,6 @@
       <div class="navbar-brand-wrapper d-flex align-items-center justify-content-center">
         <a class="navbar-brand brand-logo" href="{{ route('admin_dashboard') }}">
           <img src="{{ asset('assets/images/smart-icon.jpg') }}" alt="logo" />
-        </a>
-        <a class="navbar-brand brand-logo-mini" href="#">
-          <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
         </a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
@@ -45,7 +42,6 @@
                       <i class="mdi mdi-logout me-2 text-primary"></i> Logout
                   </a>
               </form>
-
             </div>
           </li>
         </ul>
@@ -75,15 +71,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('subjects.index') }}">
+            <a class="nav-link active" href="{{ route('subjects.index') }}">
               <i class="mdi mdi-book-plus menu-icon"></i>
               <span class="menu-title">Subjects</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin_dashboard') }}">
-              <i class="mdi mdi-cog menu-icon"></i>
-              <span class="menu-title">Settings</span>
             </a>
           </li>
         </ul>
@@ -92,76 +82,91 @@
       <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="row">
-            <!-- Summary Cards -->
-                      <div class="col-md-3 grid-margin stretch-card">
-            <div class="card bg-primary text-white">
-              <div class="card-body">
-                <h4>Total Students</h4>
-                <h2 class="fw-bold mt-2">{{ $totalStudents }}</h2>
-              </div>
-            </div>
+
+          <!-- Page Title -->
+          <div class="page-header mb-4">
+            <h3 class="page-title fw-bold">Add New Subject</h3>
           </div>
 
-          <div class="col-md-3 grid-margin stretch-card">
-            <div class="card bg-success text-white">
-              <div class="card-body">
-                <h4>Present Today</h4>
-                <h2 class="fw-bold mt-2">{{ $presentToday }}</h2>
-              </div>
+          <!-- Flash Messages -->
+          @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+          @endif
+          @if($errors->any())
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
             </div>
-          </div>
+          @endif
 
-          <div class="col-md-3 grid-margin stretch-card">
-            <div class="card bg-warning text-white">
-              <div class="card-body">
-                <h4>Late</h4>
-                <h2 class="fw-bold mt-2">{{ $lateCount }}</h2>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 grid-margin stretch-card">
-            <div class="card bg-danger text-white">
-              <div class="card-body">
-                <h4>Absent</h4>
-                <h2 class="fw-bold mt-2">{{ $absentCount }}</h2>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chart and Recent Logs -->
-          <div class="row">
-            <div class="col-md-8 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Attendance Summary (This Week)</h4>
-                  <canvas id="attendanceChart" height="150"></canvas>
+          <!-- Add Subject Form -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form method="POST" action="{{ route('subjects.store') }}">
+                @csrf
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label class="form-label fw-bold">Subject Code</label>
+                    <input type="text" name="code" class="form-control" placeholder="e.g. CCS119" required>
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label fw-bold">Subject Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Capstone Project and Research 1" required>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label fw-bold">Schedule</label>
+                    <input type="text" name="schedule" class="form-control" placeholder="e.g. Fri 05:30PM-08:30PM" required>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div class="col-md-4 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Recent Scans</h4>
-                  <ul class="list-unstyled">
-                    @foreach ($recentScans as $scan)
-                    <li class="border-bottom py-2">
-                      <strong>{{ $scan->user->name ?? 'Unknown' }}</strong> –
-                      @if ($scan->time_in)
-                        <span class="text-success">Time In</span> {{ \Carbon\Carbon::parse($scan->time_in)->format('h:i A') }} - 
-                      @endif
-                      @if ($scan->time_out)
-                        <span class="text-primary">Time Out</span> {{ \Carbon\Carbon::parse($scan->time_out)->format('h:i A') }}
-                      @endif
-                    </li>
-                    @endforeach
-                  </ul>
-                </div>
-              </div>  
+                <button type="submit" class="btn btn-primary">Add Subject</button>
+              </form>
             </div>
           </div>
+
+          <!-- Subject List -->
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title fw-bold">Existing Subjects</h4>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Subject Code</th>
+                      <th>Subject Name</th>
+                      <th>Schedule</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @forelse($subjects as $index => $subject)
+                    <tr>
+                      <td>{{ $index + 1 }}</td>
+                      <td>{{ $subject->code }}</td>
+                      <td>{{ $subject->name }}</td>
+                      <td>{{ $subject->schedule }}</td>
+                      <td>
+                        <form action="{{ route('subjects.destroy', $subject->id) }}" method="POST" onsubmit="return confirm('Delete this subject?')">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                      </td>
+                    </tr>
+                    @empty
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">No subjects found.</td>
+                    </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Footer -->
@@ -169,9 +174,6 @@
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
             <span class="text-muted text-center d-block d-sm-inline-block">
               © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
-            </span>
-            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
-              Developed by Admin Team
             </span>
           </div>
         </footer>
@@ -181,33 +183,7 @@
 
   <!-- JS Files -->
   <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-  <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
   <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
   <script src="{{ asset('assets/js/template.js') }}"></script>
-
-  <!-- Chart Script -->
-
-<script>
-  const ctx = document.getElementById('attendanceChart');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: @json($weekDays),
-      datasets: [{
-        label: 'Attendance',
-        data: @json($attendanceData),
-        borderColor: '#4B49AC',
-        backgroundColor: 'rgba(75, 73, 172, 0.1)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-</script>
-
 </body>
 </html>

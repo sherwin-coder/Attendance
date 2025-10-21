@@ -5,8 +5,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TaskController;
+
+
+Route::resource('subjects', SubjectController::class);
+
 
 Route::get('/admin_dashboard', [AdminDashboardController::class, 'index'])->name('admin_dashboard');
+
+Route::get('/actquiz', [TaskController::class, 'index'])->name('actquiz');
+Route::post('/actquiz/add', [TaskController::class, 'store'])->name('task.add');
+Route::delete('/actquiz/{id}', [TaskController::class, 'destroy'])->name('task.delete');
+Route::get('/tasks/filter', [TaskController::class, 'filter'])->name('tasks.filter');
+
+    
 
 // Student Management Routes
 Route::middleware(['auth', 'verified'])->group(function () {

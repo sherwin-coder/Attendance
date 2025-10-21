@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -40,10 +41,10 @@
               </div>
               <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
               <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                  @csrf
-                  <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                      <i class="mdi mdi-logout me-2 text-primary"></i> Logout
-                  </a>
+                @csrf
+                <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Logout
+                </a>
               </form>
             </div>
           </li>
@@ -74,9 +75,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin_dashboard') }}">
-              <i class="mdi mdi-chart-bar menu-icon"></i>
-              <span class="menu-title">Reports</span>
+            <a class="nav-link" href="{{ route('subjects.index') }}">
+              <i class="mdi mdi-book-plus menu-icon"></i>
+              <span class="menu-title">Subjects</span>
             </a>
           </li>
           <li class="nav-item">
@@ -92,58 +93,79 @@
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-            
-        <div class="container">
-            <h2 class="mb-4">Attendance Logs</h2>
 
-            <table class="table table-striped">
+            <div class="container">
+              <h2 class="mb-4">Attendance Logs</h2>
+
+              <form method="GET" action="{{ route('attendance.logs') }}" class="d-flex align-items-center">
+                <label for="subject" class="me-2 fw-bold">Filter by Subject:</label>
+                <select name="subject" id="subject" class="form-select me-2" style="width: 200px; font-weight: bold; color: grey;" onchange="this.form.submit()">
+                  <option value="">All Subjects</option>
+                  @foreach($subjects as $subject)
+                  <option value="{{ $subject->id }}" {{ $selectedSubject == $subject->id ? 'selected' : '' }}>
+                    {{ $subject->code }} - {{ $subject->name }}
+                  </option>
+                  @endforeach
+                </select>
+                <noscript><button type="submit" class="btn btn-primary">Filter</button></noscript>
+              </form>
+
+              <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Time In</th>
-                        <th>Time Out</th>
-                    </tr>
+                  <tr>
+                    <th>#</th>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    @foreach($logs as $index => $log)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $log->user->studentno ?? 'N/A' }}</td>
-                        <td>{{ $log->user->name ?? 'N/A' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
-                        <td>{{ $log->time_in ?? '-' }}</td>
-                        <td>{{ $log->time_out ?? '-' }}</td>
-                    </tr>
-                    @endforeach
+                  @forelse($logs as $index => $log)
+                  <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $log->user->studentno ?? 'N/A' }}</td>
+                    <td>{{ $log->user->name ?? 'N/A' }}</td>
+                    <td>{{ $log->subject->code ?? 'N/A' }} - {{ $log->subject->name ?? 'N/A' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
+                    <td>{{ $log->time_in ?? '-' }}</td>
+                    <td>{{ $log->time_out ?? '-' }}</td>
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="7" class="text-center text-muted">No attendance logs found.</td>
+                  </tr>
+                  @endforelse
                 </tbody>
-            </table>
+              </table>
 
-            {{ $logs->links() }}
-        </div>
+              {{ $logs->appends(['subject' => $selectedSubject])->links() }}
 
-        <!-- Footer -->
-        <footer class="footer">
-          <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center d-block d-sm-inline-block">
-              © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
-            </span>
-            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
-              Developed by Admin Team
-            </span>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+              <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted text-center d-block d-sm-inline-block">
+                  © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
+                </span>
+                <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
+                  Developed by Admin Team
+                </span>
+              </div>
+            </footer>
           </div>
-        </footer>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- JS Files -->
-  <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-  <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-  <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-  <script src="{{ asset('assets/js/template.js') }}"></script>
+      <!-- JS Files -->
+      <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+      <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
+      <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+      <script src="{{ asset('assets/js/template.js') }}"></script>
 
 </body>
+
 </html>

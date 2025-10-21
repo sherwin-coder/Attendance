@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class StudentController extends Controller
 {
     public function index(Request $request)
     {
         $query = User::query()
-        ->where('email', '!=', 'admin@gmail.com');
+            ->where('email', '!=', 'admin@gmail.com');
 
         // Filtering by year & section
         if ($request->filled('yrsec')) {
@@ -21,14 +24,14 @@ class StudentController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('studentno', 'like', '%' . $request->search . '%');
+                    ->orWhere('studentno', 'like', '%' . $request->search . '%');
             });
         }
 
         $students = $query->orderBy('yrsec')->paginate(10);
         $yrsecs = User::select('yrsec')->distinct()->pluck('yrsec')
-        ->where('email', '!=', 'admin@gmail.com');
-;
+            ->where('email', '!=', 'admin@gmail.com');
+
 
         return view('studentrec', compact('students', 'yrsecs'));
     }
@@ -53,20 +56,26 @@ class StudentController extends Controller
         // Determine final yrsec value
         $yrsec = $request->yrsec === 'add_new' ? $request->newYrSec : $request->yrsec;
 
-        // Make sure it’s not empty
         if (empty($yrsec)) {
             return back()->withErrors(['yrsec' => 'Please select or enter a Year & Section.'])->withInput();
         }
 
-        User::create([
+        // Create student
+        $student = User::create([
             'name' => $request->name,
             'studentno' => $request->studentno,
             'email' => $request->email,
-            'yrsec' => $yrsec, // Explicitly use the processed value
+            'yrsec' => $yrsec,
         ]);
 
-        return redirect()->route('students.index')->with('success', 'Student added successfully.');
+        // ✅ Auto-enroll to all subjects using Eloquent
+        $subjectIds = Subject::pluck('id');
+        $student->subjects()->attach($subjectIds);
+
+        return redirect()->route('students.index')->with('success', 'Student added and enrolled to all subjects successfully.');
     }
+
+
 
 
     public function edit($id)
@@ -77,32 +86,32 @@ class StudentController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $student = User::findOrFail($id);
+    {
+        $student = User::findOrFail($id);
 
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'studentno' => 'required|string|unique:users,studentno,' . $student->id,
-        'email' => 'required|email|unique:users,email,' . $student->id,
-        'yrsec' => 'nullable|string',
-        'newYrSec' => 'nullable|string|max:255',
-    ]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'studentno' => 'required|string|unique:users,studentno,' . $student->id,
+            'email' => 'required|email|unique:users,email,' . $student->id,
+            'yrsec' => 'nullable|string',
+            'newYrSec' => 'nullable|string|max:255',
+        ]);
 
-    $yrsec = $request->yrsec === 'add_new' ? $request->newYrSec : $request->yrsec;
+        $yrsec = $request->yrsec === 'add_new' ? $request->newYrSec : $request->yrsec;
 
-    if (empty($yrsec)) {
-        return back()->withErrors(['yrsec' => 'Please select or enter a Year & Section.'])->withInput();
+        if (empty($yrsec)) {
+            return back()->withErrors(['yrsec' => 'Please select or enter a Year & Section.'])->withInput();
+        }
+
+        $student->update([
+            'name' => $request->name,
+            'studentno' => $request->studentno,
+            'email' => $request->email,
+            'yrsec' => $yrsec,
+        ]);
+
+        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
-
-    $student->update([
-        'name' => $request->name,
-        'studentno' => $request->studentno,
-        'email' => $request->email,
-        'yrsec' => $yrsec,
-    ]);
-
-    return redirect()->route('students.index')->with('success', 'Student updated successfully.');
-}
 
 
     public function destroy($id)
