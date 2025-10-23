@@ -7,9 +7,14 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AdminController;
+
 
 
 Route::resource('subjects', SubjectController::class);
+
+Route::get('newadmin', [AdminController::class, 'create'])->name('newadmin');
+Route::post('/admin/store', [AdminController::class, 'store'])->name('admin.store');
 
 
 Route::get('/admin_dashboard', [AdminDashboardController::class, 'index'])->name('admin_dashboard');

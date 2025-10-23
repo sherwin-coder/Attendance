@@ -13,7 +13,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $query = User::query()
-            ->where('email', '!=', 'admin@gmail.com');
+            ->where('role', '!=',['professor', 'admin']);
 
         // Filtering by year & section
         if ($request->filled('yrsec')) {
@@ -30,7 +30,7 @@ class StudentController extends Controller
 
         $students = $query->orderBy('yrsec')->paginate(10);
         $yrsecs = User::select('yrsec')->distinct()->pluck('yrsec')
-            ->where('email', '!=', 'admin@gmail.com');
+            ->where('role', '!=',['professor', 'admin']);
 
 
         return view('studentrec', compact('students', 'yrsecs'));

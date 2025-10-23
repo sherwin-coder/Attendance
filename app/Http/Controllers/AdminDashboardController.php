@@ -12,7 +12,7 @@ class AdminDashboardController extends Controller
     {
         $today = Carbon::today();
 
-        $totalStudents = User::where('email', '!=', 'admin@gmail.com')->count();
+        $totalStudents = User::whereNotIn('role', ['professor', 'admin'])->count();
 
         $todayAttendances = Attendance::whereDate('date', $today)->get();
 

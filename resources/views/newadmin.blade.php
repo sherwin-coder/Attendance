@@ -46,7 +46,6 @@
                   <i class="mdi mdi-logout me-2 text-primary"></i> Logout
                 </a>
               </form>
-
             </div>
           </li>
         </ul>
@@ -91,7 +90,7 @@
             <a class="nav-link" href="{{ route('newadmin') }}">
               <i class="mdi mdi-cog menu-icon"></i>
               <span class="menu-title">Admin Settings</span>
-            </a>  
+            </a>
           </li>
         </ul>
       </nav>
@@ -100,129 +99,95 @@
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-            <!-- Summary Cards -->
-            <div class="col-md-3 grid-margin stretch-card">
-              <div class="card bg-primary text-white">
+            <div class="col-md-8 mx-auto grid-margin stretch-card">
+              <div class="card">
                 <div class="card-body">
-                  <h4>Total Students</h4>
-                  <h2 class="fw-bold mt-2">{{ $totalStudents }}</h2>
-                </div>
-              </div>
-            </div>
+                  <h4 class="card-title mb-4">Add New Admin / Professor</h4>
 
-            <div class="col-md-3 grid-margin stretch-card">
-              <div class="card bg-success text-white">
-                <div class="card-body">
-                  <h4>Present Today</h4>
-                  <h2 class="fw-bold mt-2">{{ $presentToday }}</h2>
-                </div>
-              </div>
-            </div>
+                  @if(session('success'))
+                  <div class="alert alert-success">{{ session('success') }}</div>
+                  @endif
 
-            <div class="col-md-3 grid-margin stretch-card">
-              <div class="card bg-warning text-white">
-                <div class="card-body">
-                  <h4>Late</h4>
-                  <h2 class="fw-bold mt-2">{{ $lateCount }}</h2>
-                </div>
-              </div>
-            </div>
+                  <form method="POST" action="{{ route('admin.store') }}">
+                    @csrf
+                    <div class="form-group">
+                      <label for="name">Full Name</label>
+                      <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
 
-            <div class="col-md-3 grid-margin stretch-card">
-              <div class="card bg-danger text-white">
-                <div class="card-body">
-                  <h4>Absent</h4>
-                  <h2 class="fw-bold mt-2">{{ $absentCount }}</h2>
-                </div>
-              </div>
-            </div>
+                    <div class="form-group">
+                      <label for="email">Email Address</label>
+                      <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
 
-            <!-- Chart and Recent Logs -->
-            <div class="row">
-              <div class="col-md-8 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Attendance Summary (This Week)</h4>
-                    <canvas id="attendanceChart" height="150"></canvas>
-                  </div>
-                </div>
-              </div>
+                    <div class="form-group">
+                      <label for="password">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" required>
+                      @error('password')
+                      <span class="text-danger">{{ $message }}</span>
+                      @enderror
+                    </div>
 
-              <div class="col-md-4 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Recent Scans</h4>
-                    <ul class="list-unstyled">
-                      @foreach ($recentScans as $scan)
-                      <li class="border-bottom py-2">
-                        <strong>{{ $scan->user->name ?? 'Unknown' }}</strong> –
-                        @if ($scan->time_in)
-                        <span class="text-success">Time In</span> {{ \Carbon\Carbon::parse($scan->time_in)->format('h:i A') }} -
-                        @endif
-                        @if ($scan->time_out)
-                        <span class="text-primary">Time Out</span> {{ \Carbon\Carbon::parse($scan->time_out)->format('h:i A') }}
-                        @endif
-                      </li>
-                      @endforeach
-                    </ul>
-                  </div>
+                    <div class="form-group">
+                      <label for="password_confirmation">Confirm Password</label>
+                      <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                    </div>
+
+
+                    <div class="form-group">
+                      <label for="role">Role</label>
+                      <select class="form-control" id="role" name="role" required>
+                        <option value="">-- Select Role --</option>
+                        <option value="admin">Admin</option>
+                        <option value="professor">Professor</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group" id="subjects-wrapper" style="display: none;">
+                      <label for="subjects">Assign Subjects (for Professors)</label>
+                      <select multiple class="form-control" id="subjects" name="subjects[]" style="height: auto">
+                        @foreach($subjects as $subject)
+                        <option value="{{ $subject->id }}">{{ $subject->code }} - {{ $subject->name }}</option>
+                        @endforeach
+                      </select>
+                      <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple subjects.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">Create Account</button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Footer -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted text-center d-block d-sm-inline-block">
-                © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
-              </span>
-              <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
-                Developed by Admin Team
-              </span>
-            </div>
-          </footer>
         </div>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center d-block d-sm-inline-block">
+              © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
+            </span>
+            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
+              Developed by Admin Team
+            </span>
+          </div>
+        </footer>
       </div>
     </div>
+  </div>
 
-    <!-- JS Files -->
-    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-    <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('assets/js/template.js') }}"></script>
-
-    <!-- Chart Script -->
-
-    <script>
-      const ctx = document.getElementById('attendanceChart');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: @json($weekDays),
-          datasets: [{
-            label: 'Attendance',
-            data: @json($attendanceData),
-            borderColor: '#4B49AC',
-            backgroundColor: 'rgba(75, 73, 172, 0.1)',
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          plugins: {
-            legend: {
-              display: false
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    </script>
+  <!-- JS Files -->
+  <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
+  <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+  <script src="{{ asset('assets/js/template.js') }}"></script>
+  <script>
+    document.getElementById('role').addEventListener('change', function() {
+      document.getElementById('subjects-wrapper').style.display =
+        this.value === 'professor' ? 'block' : 'none';
+    });
+  </script>
 
 </body>
 

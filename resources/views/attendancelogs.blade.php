@@ -81,9 +81,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin_dashboard') }}">
+            <a class="nav-link active" href="{{ route('actquiz') }}">
+              <i class="mdi mdi-clipboard-text menu-icon"></i>
+              <span class="menu-title">Student Tasks</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('newadmin') }}">
               <i class="mdi mdi-cog menu-icon"></i>
-              <span class="menu-title">Settings</span>
+              <span class="menu-title">Admin Settings</span>
             </a>
           </li>
         </ul>

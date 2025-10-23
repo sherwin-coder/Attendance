@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -40,10 +41,10 @@
               </div>
               <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
               <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                  @csrf
-                  <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                      <i class="mdi mdi-logout me-2 text-primary"></i> Logout
-                  </a>
+                @csrf
+                <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Logout
+                </a>
               </form>
             </div>
           </li>
@@ -80,9 +81,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin_dashboard') }}">
+            <a class="nav-link active" href="{{ route('actquiz') }}">
+              <i class="mdi mdi-clipboard-text menu-icon"></i>
+              <span class="menu-title">Student Tasks</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('newadmin') }}">
               <i class="mdi mdi-cog menu-icon"></i>
-              <span class="menu-title">Settings</span>
+              <span class="menu-title">Admin Settings</span>
             </a>
           </li>
         </ul>
@@ -92,75 +99,76 @@
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-            
-        <div class="mb-3">
-            <a href="{{ route('students.create') }}" class="btn btn-primary">Add Student</a>
-        </div>
 
-        <form method="GET" action="{{ route('students.index') }}" class="mb-3">
-            <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request('search') }}">
-        </form>
+            <div class="mb-3">
+              <a href="{{ route('students.create') }}" class="btn btn-primary">Add Student</a>
+            </div>
 
-        <table class="table table-striped">
-            <thead>
+            <form method="GET" action="{{ route('students.index') }}" class="mb-3">
+              <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request('search') }}">
+            </form>
+
+            <table class="table table-striped">
+              <thead>
                 <tr>
-                <th>#</th>
-                <th>Student ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Year Level</th>
-                <th>Actions</th>
+                  <th>#</th>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Year Level</th>
+                  <th>Actions</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 @foreach($students as $index => $student)
                 <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $student->studentno }}</td>
-                <td>{{ $student->name }}</td>
-                <td>{{ $student->email }}</td>
-                <td>{{ $student->yrsec}}</td>
-                <td>
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ $student->studentno }}</td>
+                  <td>{{ $student->name }}</td>
+                  <td>{{ $student->email }}</td>
+                  <td>{{ $student->yrsec}}</td>
+                  <td>
                     <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-warning">Edit</a>
                     <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
-                </td>
+                  </td>
                 </tr>
                 @endforeach
-            </tbody>
-        </table>
+              </tbody>
+            </table>
 
-        <div class="mt-3">
-            {{ $students->links() }}
-        </div>
+            <div class="mt-3">
+              {{ $students->links() }}
+            </div>
 
 
 
-          
 
-        <!-- Footer -->
-        <footer class="footer">
-          <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center d-block d-sm-inline-block">
-              © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
-            </span>
-            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
-              Developed by Admin Team
-            </span>
+
+            <!-- Footer -->
+            <footer class="footer">
+              <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted text-center d-block d-sm-inline-block">
+                  © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
+                </span>
+                <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
+                  Developed by Admin Team
+                </span>
+              </div>
+            </footer>
           </div>
-        </footer>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- JS Files -->
-  <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-  <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-  <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-  <script src="{{ asset('assets/js/template.js') }}"></script>
+      <!-- JS Files -->
+      <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+      <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
+      <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+      <script src="{{ asset('assets/js/template.js') }}"></script>
 
 </body>
+
 </html>

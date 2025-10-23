@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,10 +38,10 @@
               </div>
               <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
               <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                  @csrf
-                  <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                      <i class="mdi mdi-logout me-2 text-primary"></i> Logout
-                  </a>
+                @csrf
+                <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Logout
+                </a>
               </form>
             </div>
           </li>
@@ -76,6 +77,18 @@
               <span class="menu-title">Subjects</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ route('actquiz') }}">
+              <i class="mdi mdi-clipboard-text menu-icon"></i>
+              <span class="menu-title">Student Tasks</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('newadmin') }}">
+              <i class="mdi mdi-cog menu-icon"></i>
+              <span class="menu-title">Admin Settings</span>
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -90,16 +103,16 @@
 
           <!-- Flash Messages -->
           @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+          <div class="alert alert-success">{{ session('success') }}</div>
           @endif
           @if($errors->any())
-            <div class="alert alert-danger">
-              <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
           @endif
 
           <!-- Add Subject Form -->
@@ -186,4 +199,5 @@
   <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
   <script src="{{ asset('assets/js/template.js') }}"></script>
 </body>
+
 </html>
