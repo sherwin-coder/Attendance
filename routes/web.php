@@ -24,7 +24,14 @@ Route::post('/actquiz/add', [TaskController::class, 'store'])->name('task.add');
 Route::delete('/actquiz/{id}', [TaskController::class, 'destroy'])->name('task.delete');
 Route::get('/tasks/filter', [TaskController::class, 'filter'])->name('tasks.filter');
 
-    
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+Route::get('/tasks/{taskId}/scores', [TaskController::class, 'getScores']);
+Route::post('/tasks/{taskId}/scores', [TaskController::class, 'updateScores']);
+Route::post('/tasks/{id}/complete', [TaskController::class, 'markAsCompleted']);
+Route::post('/tasks/{taskId}/scores/add', [TaskController::class, 'addScore'])->name('tasks.scores.add');
 
 // Student Management Routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -54,4 +61,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

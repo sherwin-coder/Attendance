@@ -18,4 +18,9 @@ class Task extends Model
     {
         return $this->belongsTo(Subject::class, 'subject_code', 'code');
     }
+    public function scores()
+    {
+        return $this->hasMany(StudentTaskScore::class);
+    }
+
 }
