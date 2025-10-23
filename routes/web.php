@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/', [AttendanceController::class, 'index'])->name('attendance.scan');
 Route::post('/attendance/scan', [AttendanceController::class, 'scan'])->name('attendance.scan.post');
 
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
