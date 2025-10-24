@@ -12,6 +12,119 @@
   <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+  
+  <style>
+    /* Sidebar Toggle Styles */
+    .sidebar-toggle-btn {
+      position: fixed;
+      left: 15px;
+      top: 95vh;
+      z-index: 1000;
+      background: #4B49AC;
+      border: none;
+      border-radius: 8px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 2px 15px rgba(75, 73, 172, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-toggle-btn:hover {
+      background: #3a3899;
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(75, 73, 172, 0.4);
+    }
+    
+    /* Sidebar Close Button */
+    .sidebar-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #6c757d;
+      transition: all 0.3s ease;
+      z-index: 12;
+      font-size: 1.1rem;
+    }
+    
+    .sidebar-close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+      color: #4B49AC;
+    }
+    
+    /* Sidebar Minimized State */
+    .sidebar-minimized {
+      width: 80px !important;
+    }
+    
+    .sidebar-minimized .menu-title {
+      display: none !important;
+    }
+    
+    .sidebar-minimized .nav-item .nav-link {
+      padding: 12px 15px !important;
+      justify-content: center !important;
+    }
+    
+    .sidebar-minimized .nav-item .menu-icon {
+      margin-right: 0 !important;
+      font-size: 1.4rem !important;
+    }
+    
+    /* Main content adjustment when sidebar is minimized */
+    .sidebar-minimized ~ .main-panel {
+      margin-left: 80px !important;
+      width: calc(100% - 80px) !important;
+    }
+    
+    /* Smooth transitions */
+    .sidebar,
+    .main-panel {
+      transition: all 0.3s ease;
+    }
+
+    /* Fix layout issues */
+    .page-body-wrapper {
+      min-height: calc(100vh - 70px);
+      /* padding-top: 70px; */
+    }
+
+    .main-panel {
+      width: calc(100% - 260px);
+      margin-left: 260px;
+      transition: all 0.3s ease;
+    }
+
+    /* Ensure sidebar is properly positioned */
+    .sidebar {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      height: 100vh;
+      z-index: 999;
+      margin-top: 70px;
+    }
+
+    /* Fix content wrapper */
+    .content-wrapper {
+      padding: 20px;
+      /* min-height: calc(100vh - 140px); */
+    }
+  </style>
 </head>
 
 <body>
@@ -49,9 +162,14 @@
       </div>
     </nav>
 
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle-btn d-none d-lg-block">
+      <i class="mdi mdi-arrow-left"></i>
+    </button>
+
     <div class="container-fluid page-body-wrapper">
       <!-- Sidebar -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">        
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin_dashboard') }}">
@@ -78,7 +196,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{{ route('actquiz') }}">
+            <a class="nav-link" href="{{ route('actquiz') }}">
               <i class="mdi mdi-clipboard-text menu-icon"></i>
               <span class="menu-title">Student Tasks</span>
             </a>
@@ -90,6 +208,9 @@
             </a>
           </li>
         </ul>
+            <button class="sidebar-toggle-btn d-none d-lg-block">
+      <i class="mdi mdi-arrow-left"></i>
+    </button>
       </nav>
 
       <!-- Main Panel -->
@@ -198,6 +319,58 @@
   <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
   <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
   <script src="{{ asset('assets/js/template.js') }}"></script>
+
+  <!-- Sidebar Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const closeBtn = document.querySelector('.sidebar-close-btn');
+      const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+      
+      // Close sidebar functionality
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('sidebar-minimized');
+          updateToggleButtonIcon();
+        });
+      }
+      
+      // Toggle sidebar functionality
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('sidebar-minimized');
+          updateToggleButtonIcon();
+        });
+      }
+      
+      // Update toggle button icon based on sidebar state
+      function updateToggleButtonIcon() {
+        if (toggleBtn) {
+          const icon = toggleBtn.querySelector('i');
+          if (sidebar.classList.contains('sidebar-minimized')) {
+            icon.className = 'mdi mdi-arrow-right';
+          } else {
+            icon.className = 'mdi mdi-arrow-left';
+          }
+        }
+      }
+      
+      // Mobile sidebar close when clicking outside
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth < 992) {
+          const isClickInsideSidebar = sidebar.contains(event.target);
+          const isClickOnToggleBtn = toggleBtn.contains(event.target);
+          
+          if (!isClickInsideSidebar && !isClickOnToggleBtn && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+          }
+        }
+      });
+
+      // Initialize button icon on page load
+      updateToggleButtonIcon();
+    });
+  </script>
 </body>
 
 </html>

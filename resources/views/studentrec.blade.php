@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Admin Dashboard | Smart QR Attendance</title>
+  <title>Student Records | Smart QR Attendance</title>
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="{{ asset('assets/vendors/feather/feather.css') }}">
@@ -12,6 +12,119 @@
   <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+
+  <style>
+    /* Sidebar Toggle Styles */
+    .sidebar-toggle-btn {
+      position: fixed;
+      left: 15px;
+      top: 95vh;
+      z-index: 1000;
+      background: #4B49AC;
+      border: none;
+      border-radius: 8px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 2px 15px rgba(75, 73, 172, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-toggle-btn:hover {
+      background: #3a3899;
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(75, 73, 172, 0.4);
+    }
+    
+    /* Sidebar Close Button */
+    .sidebar-close-btn {
+      position: absolute;
+      top: 95vh;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #6c757d;
+      transition: all 0.3s ease;
+      z-index: 12;
+      font-size: 1.1rem;
+    }
+    
+    .sidebar-close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+      color: #4B49AC;
+    }
+    
+    /* Sidebar Minimized State */
+    .sidebar-minimized {
+      width: 80px !important;
+    }
+    
+    .sidebar-minimized .menu-title {
+      display: none !important;
+    }
+    
+    .sidebar-minimized .nav-item .nav-link {
+      padding: 12px 15px !important;
+      justify-content: center !important;
+    }
+    
+    .sidebar-minimized .nav-item .menu-icon {
+      margin-right: 0 !important;
+      font-size: 1.4rem !important;
+    }
+    
+    /* Main content adjustment when sidebar is minimized */
+    .sidebar-minimized ~ .main-panel {
+      margin-left: 80px !important;
+      width: calc(100% - 80px) !important;
+    }
+    
+    /* Smooth transitions */
+    .sidebar,
+    .main-panel {
+      transition: all 0.3s ease;
+    }
+
+    /* Fix layout issues */
+    .page-body-wrapper {
+      min-height: calc(100vh - 70px);
+      /* padding-top: 70px; */
+    }
+
+    .main-panel {
+      width: calc(100% - 260px);
+      margin-left: 260px;
+      transition: all 0.3s ease;
+    }
+
+    /* Ensure sidebar is properly positioned */
+    .sidebar {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      height: 100vh;
+      z-index: 999;
+      margin-top: 70px;
+    }
+
+    /* Fix content wrapper */
+    .content-wrapper {
+      padding: 20px;
+      /* min-height: calc(100vh - 140px); */
+    }
+  </style>
 </head>
 
 <body>
@@ -52,9 +165,20 @@
       </div>
     </nav>
 
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle-btn d-none d-lg-block">
+      <i class="mdi mdi-arrow-left"></i>
+    </button>
+
     <div class="container-fluid page-body-wrapper">
       <!-- Sidebar -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <!-- <div class="sidebar-header">
+          <button class="sidebar-close-btn">
+            <i class="mdi mdi-close"></i>
+          </button>
+        </div> -->
+        
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin_dashboard') }}">
@@ -63,7 +187,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('students.index') }}">
+            <a class="nav-link active" href="{{ route('students.index') }}">
               <i class="mdi mdi-account-group menu-icon"></i>
               <span class="menu-title">Student Records</span>
             </a>
@@ -81,7 +205,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{{ route('actquiz') }}">
+            <a class="nav-link" href="{{ route('actquiz') }}">
               <i class="mdi mdi-clipboard-text menu-icon"></i>
               <span class="menu-title">Student Tasks</span>
             </a>
@@ -90,7 +214,7 @@
             <a class="nav-link" href="{{ route('newadmin') }}">
               <i class="mdi mdi-cog menu-icon"></i>
               <span class="menu-title">Admin Settings</span>
-            </a>
+            </a>  
           </li>
         </ul>
       </nav>
@@ -98,77 +222,166 @@
       <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="row">
+          <!-- Page Header -->
+          <div class="page-header">
+            <h3 class="page-title">
+              <i class="mdi mdi-account-group me-2"></i>
+              Student Records
+            </h3>
+          </div>
 
-            <div class="mb-3">
-              <a href="{{ route('students.create') }}" class="btn btn-primary">Add Student</a>
+          <!-- Action Buttons and Search -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <a href="{{ route('students.create') }}" class="btn btn-primary">
+                <i class="mdi mdi-account-plus me-2"></i>Add Student
+              </a>
             </div>
+            <div class="col-md-6">
+              <form method="GET" action="{{ route('students.index') }}" class="d-flex">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request('search') }}">
+                <button type="submit" class="btn btn-outline-primary ms-2">
+                  <i class="mdi mdi-magnify"></i>
+                </button>
+              </form>
+            </div>
+          </div>
 
-            <form method="GET" action="{{ route('students.index') }}" class="mb-3">
-              <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request('search') }}">
-            </form>
-
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Student ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Year Level</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($students as $index => $student)
-                <tr>
-                  <td>{{ $index + 1 }}</td>
-                  <td>{{ $student->studentno }}</td>
-                  <td>{{ $student->name }}</td>
-                  <td>{{ $student->email }}</td>
-                  <td>{{ $student->yrsec}}</td>
-                  <td>
-                    <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline;">
+          <!-- Students Table -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Year & Section</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($students as $index => $student)
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $student->studentno }}</td>
+                <td>{{ $student->name }}</td>
+                <td>{{ $student->email }}</td>
+                <td>{{ $student->yrsec}}</td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <a href="{{ route('students.edit', $student->id) }}" class="btn btn-sm btn-warning">
+                      <i class="mdi mdi-pencil me-1"></i>Edit
+                    </a>
+                    <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this student?')">
+                        <i class="mdi mdi-delete me-1"></i>Delete
+                      </button>
                     </form>
-                  </td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>
-
-            <div class="mt-3">
-              {{ $students->links() }}
-            </div>
-
-
-
-
-
-            <!-- Footer -->
-            <footer class="footer">
-              <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                <span class="text-muted text-center d-block d-sm-inline-block">
-                  © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
-                </span>
-                <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
-                  Developed by Admin Team
-                </span>
-              </div>
-            </footer>
-          </div>
+                  </div>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
+
+        <!-- Pagination -->
+        <div class="mt-3">
+          {{ $students->links() }}
+        </div>
+
+        <!-- Empty State -->
+        @if($students->count() == 0)
+        <div class="text-center py-4">
+          <i class="mdi mdi-account-off display-4 text-muted"></i>
+          <h4 class="text-muted mt-3">No students found</h4>
+          <p class="text-muted">No student records match your search criteria.</p>
+        </div>
+        @endif
       </div>
+    </div>
+  </div>
+</div>
+        </div>
 
-      <!-- JS Files -->
-      <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-      <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
-      <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-      <script src="{{ asset('assets/js/template.js') }}"></script>
+        <!-- Footer -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center d-block d-sm-inline-block">
+              © {{ date('Y') }} Smart Student Attendance System. All Rights Reserved.
+            </span>
+            <span class="float-none float-sm-end d-block mt-1 mt-sm-0 text-center">
+              Developed by Admin Team
+            </span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
 
+  <!-- JS Files -->
+  <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ asset('assets/vendors/chart.js/chart.umd.js') }}"></script>
+  <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
+  <script src="{{ asset('assets/js/template.js') }}"></script>
+
+  <!-- Sidebar Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const closeBtn = document.querySelector('.sidebar-close-btn');
+      const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+      
+      // Close sidebar functionality
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('sidebar-minimized');
+          updateToggleButtonIcon();
+        });
+      }
+      
+      // Toggle sidebar functionality
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          sidebar.classList.toggle('sidebar-minimized');
+          updateToggleButtonIcon();
+        });
+      }
+      
+      // Update toggle button icon based on sidebar state
+      function updateToggleButtonIcon() {
+        if (toggleBtn) {
+          const icon = toggleBtn.querySelector('i');
+          if (sidebar.classList.contains('sidebar-minimized')) {
+            icon.className = 'mdi mdi-arrow-right';
+          } else {
+            icon.className = 'mdi mdi-arrow-left';
+          }
+        }
+      }
+      
+      // Mobile sidebar close when clicking outside
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth < 992) {
+          const isClickInsideSidebar = sidebar.contains(event.target);
+          const isClickOnToggleBtn = toggleBtn.contains(event.target);
+          
+          if (!isClickInsideSidebar && !isClickOnToggleBtn && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+          }
+        }
+      });
+
+      // Initialize button icon on page load
+      updateToggleButtonIcon();
+    });
+  </script>
 </body>
-
 </html>

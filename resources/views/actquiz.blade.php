@@ -12,6 +12,119 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
+    
+    <style>
+        /* Sidebar Toggle Styles */
+        .sidebar-toggle-btn {
+            position: fixed;
+            left: 15px;
+            top: 95vh;
+            z-index: 1000;
+            background: #4B49AC;
+            border: none;
+            border-radius: 8px;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 2px 15px rgba(75, 73, 172, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle-btn:hover {
+            background: #3a3899;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(75, 73, 172, 0.4);
+        }
+        
+        /* Sidebar Close Button */
+        .sidebar-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            z-index: 12;
+            font-size: 1.1rem;
+        }
+        
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+            color: #4B49AC;
+        }
+        
+        /* Sidebar Minimized State */
+        .sidebar-minimized {
+            width: 80px !important;
+        }
+        
+        .sidebar-minimized .menu-title {
+            display: none !important;
+        }
+        
+        .sidebar-minimized .nav-item .nav-link {
+            padding: 12px 15px !important;
+            justify-content: center !important;
+        }
+        
+        .sidebar-minimized .nav-item .menu-icon {
+            margin-right: 0 !important;
+            font-size: 1.4rem !important;
+        }
+        
+        /* Main content adjustment when sidebar is minimized */
+        .sidebar-minimized ~ .main-panel {
+            margin-left: 80px !important;
+            width: calc(100% - 80px) !important;
+        }
+        
+        /* Smooth transitions */
+        .sidebar,
+        .main-panel {
+            transition: all 0.3s ease;
+        }
+
+        /* Fix layout issues */
+        .page-body-wrapper {
+            min-height: calc(100vh - 70px);
+            /* padding-top: 70px; */
+        }
+
+        .main-panel {
+            width: calc(100% - 260px);
+            margin-left: 260px;
+            transition: all 0.3s ease;
+        }
+
+        /* Ensure sidebar is properly positioned */
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            height: 100vh;
+            z-index: 999;
+            margin-top: 70px;
+        }
+
+        /* Fix content wrapper */
+        .content-wrapper {
+            padding: 20px;
+            /* min-height: calc(100vh - 140px); */
+        }
+    </style>
 </head>
 
 <body>
@@ -82,18 +195,21 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('actquiz') }}">
-                            <i class="mdi mdi-cog menu-icon"></i>
-                            <span class="menu-title">Activities % Quizzes</span>
+                        <a class="nav-link active" href="{{ route('actquiz') }}">
+                            <i class="mdi mdi-clipboard-text menu-icon"></i>
+                            <span class="menu-title">Student Tasks</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin_dashboard') }}">
+                        <a class="nav-link" href="{{ route('newadmin') }}">
                             <i class="mdi mdi-cog menu-icon"></i>
-                            <span class="menu-title">Settings</span>
+                            <span class="menu-title">Admin Settings</span>
                         </a>
                     </li>
                 </ul>
+                        <button class="sidebar-toggle-btn d-none d-lg-block">
+            <i class="mdi mdi-arrow-left"></i>
+        </button>
             </nav>
 
             <!-- Main Panel -->
@@ -104,7 +220,7 @@
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     @if (session('success'))
-                                        <div class="alert alert-success">{{ session('success') }}</div>
+                                    <div class="alert alert-success">{{ session('success') }}</div>
                                     @endif
 
                                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -121,9 +237,9 @@
                                         <select class="form-select" id="subjectFilter">
                                             <option selected disabled>Select Subject</option>
                                             @foreach ($subjects as $subject)
-                                                <option value="{{ $subject->code }}">
-                                                    {{ $subject->code }} - {{ $subject->name }}
-                                                </option>
+                                            <option value="{{ $subject->code }}">
+                                                {{ $subject->code }} - {{ $subject->name }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -143,45 +259,45 @@
                                             </thead>
                                             <tbody id="taskTableBody">
                                                 @foreach ($tasks as $task)
-                                                    <tr data-id="{{ $task->id }}">
-                                                        <td>{{ $task->title }}</td>
-                                                        <td>{{ $task->type }}</td>
-                                                        <td>{{ $task->subject_code }} - {{ $task->subject->name ?? '' }}
-                                                        </td>
-                                                        <td>{{ $task->due_date }}</td>
-                                                        <td>
-                                                            <span
-                                                                class="badge {{ $task->status == 'Completed' ? 'bg-success' : 'bg-warning text-dark' }}">
-                                                                {{ $task->status }}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex gap-1">
-                                                                <button class="btn btn-sm btn-info view-btn"
-                                                                    data-id="{{ $task->id }}" data-mode="view"
-                                                                    data-bs-toggle="modal" data-bs-target="#scoreModal">
-                                                                    <i class="mdi mdi-eye"></i>
+                                                <tr data-id="{{ $task->id }}">
+                                                    <td>{{ $task->title }}</td>
+                                                    <td>{{ $task->type }}</td>
+                                                    <td>{{ $task->subject_code }} - {{ $task->subject->name ?? '' }}
+                                                    </td>
+                                                    <td>{{ $task->due_date }}</td>
+                                                    <td>
+                                                        <span
+                                                            class="badge {{ $task->status == 'Completed' ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                            {{ $task->status }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex gap-1">
+                                                            <button class="btn btn-sm btn-info view-btn"
+                                                                data-id="{{ $task->id }}" data-mode="view"
+                                                                data-bs-toggle="modal" data-bs-target="#scoreModal">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </button>
+
+                                                            <button class="btn btn-sm btn-warning edit-btn"
+                                                                data-id="{{ $task->id }}" data-mode="edit"
+                                                                data-bs-toggle="modal" data-bs-target="#scoreModal">
+                                                                <i class="mdi mdi-pencil"></i>
+                                                            </button>
+
+                                                            <form action="{{ route('tasks.destroy', $task->id) }}"
+                                                                method="POST"
+                                                                onsubmit="return confirm('Delete this task?')">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button class="btn btn-sm btn-danger">
+                                                                    <i class="mdi mdi-delete"></i>
                                                                 </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
 
-                                                                <button class="btn btn-sm btn-warning edit-btn"
-                                                                    data-id="{{ $task->id }}" data-mode="edit"
-                                                                    data-bs-toggle="modal" data-bs-target="#scoreModal">
-                                                                    <i class="mdi mdi-pencil"></i>
-                                                                </button>
-
-                                                                <form action="{{ route('tasks.destroy', $task->id) }}"
-                                                                    method="POST"
-                                                                    onsubmit="return confirm('Delete this task?')">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button class="btn btn-sm btn-danger">
-                                                                        <i class="mdi mdi-delete"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
+                                                </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -232,9 +348,9 @@
                             <select name="subject_code" class="form-select" required>
                                 <option value="">Select Subject</option>
                                 @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->code }}">
-                                        {{ $subject->code }} - {{ $subject->name }}
-                                    </option>
+                                <option value="{{ $subject->code }}">
+                                    {{ $subject->code }} - {{ $subject->name }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -295,7 +411,7 @@
                                     <select id="newStudentSelect" class="form-select" style="color: black;">
                                         <option value="">-- Choose Student --</option>
                                         @foreach(App\Models\User::all() as $student)
-                                            <option value="{{ $student->id }}">{{ $student->name }}</option>
+                                        <option value="{{ $student->id }}">{{ $student->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -327,11 +443,62 @@
     <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
     <script src="{{ asset('assets/js/template.js') }}"></script>
 
+    <!-- Sidebar Toggle Script -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const closeBtn = document.querySelector('.sidebar-close-btn');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            // Close sidebar functionality
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-minimized');
+                    updateToggleButtonIcon();
+                });
+            }
+            
+            // Toggle sidebar functionality
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('sidebar-minimized');
+                    updateToggleButtonIcon();
+                });
+            }
+            
+            // Update toggle button icon based on sidebar state
+            function updateToggleButtonIcon() {
+                if (toggleBtn) {
+                    const icon = toggleBtn.querySelector('i');
+                    if (sidebar.classList.contains('sidebar-minimized')) {
+                        icon.className = 'mdi mdi-arrow-right';
+                    } else {
+                        icon.className = 'mdi mdi-arrow-left';
+                    }
+                }
+            }
+            
+            // Mobile sidebar close when clicking outside
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 992) {
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isClickOnToggleBtn = toggleBtn.contains(event.target);
+                    
+                    if (!isClickInsideSidebar && !isClickOnToggleBtn && sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+
+            // Initialize button icon on page load
+            updateToggleButtonIcon();
+        });
+
+        // Existing task management JavaScript
         const csrfToken = '{{ csrf_token() }}';
 
         // Filter tasks by subject
-        document.getElementById('subjectFilter').addEventListener('change', function () {
+        document.getElementById('subjectFilter').addEventListener('change', function() {
             const code = this.value;
             fetch(`/tasks/filter?subject_code=${code}`)
                 .then(res => res.json())
@@ -415,13 +582,15 @@
             }));
 
             fetch(`/tasks/${taskId}/scores`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ scores })
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        scores
+                    })
+                })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -441,9 +610,11 @@
         markCompleteBtn.addEventListener('click', () => {
             const taskId = document.getElementById('taskId').value;
             fetch(`/tasks/${taskId}/complete`, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': csrfToken }
-            })
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
                 .then(res => res.json())
                 .then(() => {
                     alert('Task marked as completed.');
@@ -467,13 +638,16 @@
             }
 
             fetch(`/tasks/${taskId}/scores/add`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ user_id: userId, score })
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        score
+                    })
+                })
                 .then(res => res.json())
                 .then(data => {
                     if (data.error) {
@@ -498,8 +672,5 @@
                 .catch(err => console.error(err));
         });
     </script>
-
-
 </body>
-
 </html>

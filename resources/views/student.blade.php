@@ -13,6 +13,9 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
+    {{-- Google Font --}}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         @keyframes scan {
             0% {
@@ -332,6 +335,91 @@
         .checkmark-animate {
             animation: checkmark 0.6s ease-in-out forwards;
         }
+
+        /* Responsive scanner sizing */
+        .scanner-box {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 100%;
+        }
+
+        @media (min-width: 640px) {
+            .scanner-box {
+                max-width: 24rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .scanner-box {
+                max-width: 20rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .scanner-box {
+                max-width: 20rem;
+            }
+        }
+
+        /* Responsive text sizing */
+        .responsive-text {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+        }
+
+        .responsive-subtext {
+            font-size: clamp(0.875rem, 3vw, 1rem);
+        }
+
+        /* Optimized Modal form transitions - FIXED */
+        .auth-form {
+            transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .auth-form.hidden {
+            display: none !important;
+        }
+
+        .auth-form:not(.active) {
+            opacity: 0;
+            transform: translateX(10px);
+            pointer-events: none;
+        }
+
+        .auth-form.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        /* Tab navigation */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .auth-tab:hover {
+            color: #4f46e5;
+            background-color: #f8fafc;
+        }
+
+        .auth-tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
     </style>
 </head>
 
@@ -375,13 +463,13 @@
         </div>
     </header>
 
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal-overlay">
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="modal-overlay">
         <div class="modal-content absolute top-1/2 left-1/2 w-full max-w-md bg-white rounded-2xl card-shadow overflow-hidden">
             <!-- Modal Header -->
             <div class="shimmer-bg px-6 py-4 relative overflow-hidden">
                 <div class="flex items-center justify-between relative z-10">
-                    <h3 class="text-xl font-bold text-white">Login to Dashboard</h3>
+                    <h3 id="auth-modal-title" class="text-xl font-bold text-white">Login to Dashboard</h3>
                     <button id="close-modal" class="text-white hover:text-indigo-200 transition-colors bounce-hover">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -390,16 +478,23 @@
                 </div>
             </div>
 
-            <!-- Modal Body - Laravel Login Form -->
+            <!-- Modal Body - Authentication Forms -->
             <div class="px-6 py-6">
-                <form method="POST" action="{{ route('login') }}" id="login-form">
+                <!-- Tab Navigation -->
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-tab="login">Login</div>
+                    <div class="auth-tab" data-tab="register">Register</div>
+                </div>
+
+                <!-- Login Form -->
+                <form method="POST" action="{{ route('login') }}" id="login-form" class="auth-form active">
                     @csrf
 
                     <!-- Email Address -->
                     <div class="mb-4 form-group">
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <input
-                            id="email"
+                            id="login-email"
                             type="email"
                             name="email"
                             value="{{ old('email') }}"
@@ -415,9 +510,9 @@
 
                     <!-- Password -->
                     <div class="mb-6 form-group">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <input
-                            id="password"
+                            id="login-password"
                             type="password"
                             name="password"
                             required
@@ -440,11 +535,9 @@
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Remember me</span>
                         </label>
 
-                        @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                        <button type="button" id="show-forgot-password" class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
                             Forgot your password?
-                        </a>
-                        @endif
+                        </button>
                     </div>
 
                     <!-- Submit Button -->
@@ -457,21 +550,149 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Sign in to Dashboard
+                            Sign In
                         </span>
                     </button>
+                </form>
+
+                <!-- Register Form -->
+                <form method="POST" action="{{ route('register') }}" id="register-form" class="auth-form">
+                    @csrf
+
+                    <!-- Name -->
+                    <div class="mb-4 form-group">
+                        <label for="register-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <input
+                            id="register-name"
+                            type="text"
+                            name="name"
+                            value="{{ old('name') }}"
+                            required
+                            autofocus
+                            autocomplete="name"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('name') border-red-500 @enderror"
+                            placeholder="Enter your full name">
+                        @error('name')
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Email Address -->
+                    <div class="mb-4 form-group">
+                        <label for="register-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input
+                            id="register-email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            autocomplete="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
+                            placeholder="Enter your email">
+                        @error('email')
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4 form-group">
+                        <label for="register-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input
+                            id="register-password"
+                            type="password"
+                            name="password"
+                            required
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('password') border-red-500 @enderror"
+                            placeholder="Create a password">
+                        @error('password')
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-6 form-group">
+                        <label for="register-password-confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <input
+                            id="register-password-confirmation"
+                            type="password"
+                            name="password_confirmation"
+                            required
+                            autocomplete="new-password"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus"
+                            placeholder="Confirm your password">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover form-group"
+                        id="register-submit">
+                        <span class="flex items-center justify-center">
+                            <svg id="register-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Create Account
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Forgot Password Form -->
+                <form method="POST" action="{{ route('password.email') }}" id="forgot-password-form" class="auth-form">
+                    @csrf
+
+                    <div class="mb-6 form-group">
+                        <p class="text-sm text-gray-600 mb-4">
+                            Enter your email address and we'll send you a link to reset your password.
+                        </p>
+                        
+                        <label for="forgot-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input
+                            id="forgot-email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            autofocus
+                            autocomplete="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
+                            placeholder="Enter your email">
+                        @error('email')
+                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex space-x-3 form-group">
+                        <button
+                            type="button"
+                            id="back-to-login"
+                            class="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors btn-hover">
+                            Back to Login
+                        </button>
+                        <button
+                            type="submit"
+                            class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover"
+                            id="forgot-submit">
+                            <span class="flex items-center justify-center">
+                                <svg id="forgot-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Send Reset Link
+                            </span>
+                        </button>
+                    </div>
                 </form>
             </div>
 
             <!-- Modal Footer -->
             <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 form-group">
-                <p class="text-sm text-gray-600 text-center">
+                <p id="auth-footer-text" class="text-sm text-gray-600 text-center">
                     Don't have an account?
-                    @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                    <button type="button" id="switch-to-register" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
                         Create one here
-                    </a>
-                    @endif
+                    </button>
                 </p>
             </div>
         </div>
@@ -479,28 +700,28 @@
 
     <!-- Main Content -->
     <main class="flex-1 flex items-center justify-center py-8 px-4">
-        <div class="bg-white/95 backdrop-blur-sm p-8 rounded-2xl card-shadow w-full max-w-md">
-            <!-- Your existing scanner content remains the same -->
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+        <div class="bg-white/95 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-2xl card-shadow w-full max-w-md mx-auto">
+            <!-- Scanner Header -->
+            <div class="text-center mb-4 sm:mb-6">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Scan Your Student ID</h2>
-                <p class="text-gray-500 mt-2">Position QR code within the frame</p>
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-800 responsive-text">Scan Your Student ID</h2>
+                <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base responsive-subtext">Position QR code within the frame</p>
             </div>
 
             <!-- Camera Selector -->
-            <div class="mb-6">
+            <div class="mb-4 sm:mb-6">
                 <label for="camera-select" class="block text-sm font-medium text-gray-700 mb-2">Select Camera:</label>
                 <div class="relative">
                     <select id="camera-select"
-                        class="w-full py-3 px-4 pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus">
+                        class="w-full py-2 sm:py-3 px-3 sm:px-4 pr-8 sm:pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus text-sm sm:text-base">
                         <option value="">Loading cameras...</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </div>
@@ -508,11 +729,11 @@
             </div>
 
             <!-- Subject Selector -->
-            <div class="mb-6">
+            <div class="mb-4 sm:mb-6">
                 <label for="subject-select" class="block text-sm font-medium text-gray-700 mb-2">Select Subject:</label>
                 <div class="relative">
                     <select id="subject-select"
-                        class="w-full py-3 px-4 pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus">
+                        class="w-full py-2 sm:py-3 px-3 sm:px-4 pr-8 sm:pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus text-sm sm:text-base">
                         <option value="">Select a subject...</option>
                         @foreach ($subjects as $subject)
                         <option value="{{ $subject->code }}">
@@ -521,7 +742,7 @@
                         @endforeach
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                     </div>
@@ -530,45 +751,28 @@
 
             <!-- Scanner Frame -->
             <div id="scanner-box"
-                class="mt-2 relative mx-auto w-80 h-80 border-4 border-indigo-500 rounded-2xl overflow-hidden transition-all duration-300 scanner-glow">
+                class="scanner-box relative mx-auto border-4 border-indigo-500 rounded-2xl overflow-hidden transition-all duration-300 scanner-glow">
                 <div id="reader" class="absolute inset-0"></div>
                 <div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-indigo-500 animate-scan"></div>
 
                 <!-- Scanner corners -->
-                <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-indigo-500 rounded-tl-lg"></div>
-                <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-indigo-500 rounded-tr-lg"></div>
-                <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-indigo-500 rounded-bl-lg"></div>
-                <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-indigo-500 rounded-br-lg"></div>
+                <div class="absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-l-4 border-indigo-500 rounded-tl-lg"></div>
+                <div class="absolute top-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-r-4 border-indigo-500 rounded-tr-lg"></div>
+                <div class="absolute bottom-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-l-4 border-indigo-500 rounded-bl-lg"></div>
+                <div class="absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-r-4 border-indigo-500 rounded-br-lg"></div>
             </div>
 
             <!-- Status -->
-            <div id="status" class="mt-6 bg-gray-50 rounded-xl p-4">
-                <div class="flex items-center justify-center space-x-3">
+            <div id="status" class="mt-4 sm:mt-6 bg-gray-50 rounded-xl p-3 sm:p-4">
+                <div class="flex items-center justify-center space-x-2 sm:space-x-3">
                     <div id="loading-spinner"
-                        class="hidden w-5 h-5 border-2 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
-                    <span id="status-text" class="text-gray-700 font-medium">Waiting for QR code...</span>
+                        class="hidden w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
+                    <span id="status-text" class="text-gray-700 font-medium text-sm sm:text-base">Waiting for QR code...</span>
                 </div>
             </div>
 
             <!-- Result Message -->
-            <div id="result" class="mt-4 font-semibold text-lg text-center"></div>
-
-            <!-- OR Divider -->
-            <!-- <div class="my-6 text-gray-500 text-sm font-medium flex items-center justify-center gap-3">
-                <span class="block flex-1 border-t border-gray-300"></span>
-                <span>OR</span>
-                <span class="block flex-1 border-t border-gray-300"></span>
-            </div> -->
-
-            <!-- Manual Entry Option -->
-            <!-- <div class="text-center">
-                <button id="manual-entry-btn" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-                    </svg>
-                    Enter Student ID Manually
-                </button>
-            </div> -->
+            <div id="result" class="mt-3 sm:mt-4 font-semibold text-sm sm:text-lg text-center"></div>
         </div>
     </main>
 
@@ -580,21 +784,34 @@
         const spinner = document.getElementById("loading-spinner");
         const resultBox = document.getElementById("result");
         const scannerBox = document.getElementById("scanner-box");
-        const fileInput = document.getElementById("file-input");
         let isProcessing = false;
         let currentCameraId = null;
 
         // Enhanced Modal functionality with animations
-        const loginModal = document.getElementById('login-modal');
+        const authModal = document.getElementById('auth-modal');
         const loginModalBtn = document.getElementById('login-modal-btn');
         const closeModalBtn = document.getElementById('close-modal');
-        const loginForm = document.getElementById('login-form');
-        const loginSubmit = document.getElementById('login-submit');
-        const loginSpinner = document.getElementById('login-spinner');
+        const authModalTitle = document.getElementById('auth-modal-title');
+        const authFooterText = document.getElementById('auth-footer-text');
 
-        function openLoginModal() {
-            loginModal.classList.add('active');
+        // Form elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const forgotPasswordForm = document.getElementById('forgot-password-form');
+
+        // Tab elements
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+
+        // Navigation buttons
+        const switchToRegister = document.getElementById('switch-to-register');
+        const showForgotPassword = document.getElementById('show-forgot-password');
+        const backToLogin = document.getElementById('back-to-login');
+
+        function openAuthModal(initialTab = 'login') {
+            authModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            switchAuthTab(initialTab);
 
             // Reset form animations
             const formGroups = document.querySelectorAll('.form-group');
@@ -606,44 +823,122 @@
             });
         }
 
-        function closeLoginModal() {
-            loginModal.classList.add('closing');
+        function closeAuthModal() {
+            authModal.classList.add('closing');
             setTimeout(() => {
-                loginModal.classList.remove('active', 'closing');
+                authModal.classList.remove('active', 'closing');
                 document.body.style.overflow = 'auto';
+                // Reset to login form when closing
+                switchAuthTab('login');
             }, 200);
         }
 
-        loginModalBtn.addEventListener('click', openLoginModal);
-        closeModalBtn.addEventListener('click', closeLoginModal);
+        // OPTIMIZED: Faster tab switching without lag
+        function switchAuthTab(tabName) {
+            // Update tabs immediately
+            authTabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+
+            // Update forms - much faster approach
+            authForms.forEach(form => {
+                const isActive = form.id === `${tabName}-form`;
+                form.classList.toggle('active', isActive);
+                form.classList.toggle('hidden', !isActive);
+            });
+
+            // Update modal title and footer immediately
+            updateModalContent(tabName);
+
+            // Re-attach event listeners immediately
+            attachDynamicEventListeners();
+        }
+
+        function updateModalContent(tabName) {
+            switch(tabName) {
+                case 'login':
+                    authModalTitle.textContent = 'Login to Dashboard';
+                    authFooterText.innerHTML = `Don't have an account? <button type="button" id="switch-to-register" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">Create one here</button>`;
+                    break;
+                case 'register':
+                    authModalTitle.textContent = 'Create Account';
+                    authFooterText.innerHTML = `Already have an account? <button type="button" id="switch-to-login" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">Sign in here</button>`;
+                    break;
+                case 'forgot-password':
+                    authModalTitle.textContent = 'Reset Password';
+                    authFooterText.innerHTML = `Remember your password? <button type="button" id="switch-to-login-from-forgot" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">Back to login</button>`;
+                    break;
+            }
+        }
+
+        function attachDynamicEventListeners() {
+            // Re-attach event listeners for dynamically created buttons
+            const switchToRegisterBtn = document.getElementById('switch-to-register');
+            const switchToLoginBtn = document.getElementById('switch-to-login');
+            const switchToLoginFromForgotBtn = document.getElementById('switch-to-login-from-forgot');
+
+            if (switchToRegisterBtn) {
+                switchToRegisterBtn.onclick = () => switchAuthTab('register');
+            }
+            if (switchToLoginBtn) {
+                switchToLoginBtn.onclick = () => switchAuthTab('login');
+            }
+            if (switchToLoginFromForgotBtn) {
+                switchToLoginFromForgotBtn.onclick = () => switchAuthTab('login');
+            }
+        }
+
+        // Event Listeners
+        loginModalBtn.addEventListener('click', () => openAuthModal('login'));
+        closeModalBtn.addEventListener('click', closeAuthModal);
+
+        // Tab navigation
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchAuthTab(tab.dataset.tab);
+            });
+        });
+
+        // Form navigation
+        switchToRegister.addEventListener('click', () => switchAuthTab('register'));
+        showForgotPassword.addEventListener('click', () => switchAuthTab('forgot-password'));
+        backToLogin.addEventListener('click', () => switchAuthTab('login'));
 
         // Close modal when clicking outside
-        loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                closeLoginModal();
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                closeAuthModal();
             }
         });
 
         // Close modal with Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-                closeLoginModal();
+            if (e.key === 'Escape' && authModal.classList.contains('active')) {
+                closeAuthModal();
             }
         });
 
-        // Form submission animation
-        loginForm.addEventListener('submit', function(e) {
-            loginSpinner.classList.remove('hidden');
-            loginSubmit.disabled = true;
-            loginSubmit.classList.add('opacity-75');
+        // Form submission handlers
+        function handleFormSubmission(form, submitBtn, spinner) {
+            form.addEventListener('submit', function(e) {
+                spinner.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-75');
+                
+                // In a real application, you would let the form submit naturally
+                // This timeout is just for visual feedback
+                setTimeout(() => {
+                    spinner.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-75');
+                }, 2000);
+            });
+        }
 
-            // Simulate loading for demo (remove in production)
-            setTimeout(() => {
-                loginSpinner.classList.add('hidden');
-                loginSubmit.disabled = false;
-                loginSubmit.classList.remove('opacity-75');
-            }, 2000);
-        });
+        // Apply form submission handlers
+        handleFormSubmission(loginForm, document.getElementById('login-submit'), document.getElementById('login-spinner'));
+        handleFormSubmission(registerForm, document.getElementById('register-submit'), document.getElementById('register-spinner'));
+        handleFormSubmission(forgotPasswordForm, document.getElementById('forgot-submit'), document.getElementById('forgot-spinner'));
 
         // Enhanced input interactions
         document.querySelectorAll('.input-focus').forEach(input => {
@@ -656,7 +951,7 @@
             });
         });
 
-        // Your existing scanner functions remain the same...
+        // Scanner functions
         function showStatus(message, color = "text-gray-700") {
             statusText.textContent = message;
             statusText.className = `${color} font-medium fade-in`;
@@ -752,31 +1047,40 @@
             /* silent */
         }
 
+        // Responsive QR box configuration
+        function getQRBoxSize() {
+            const scannerWidth = scannerBox.offsetWidth;
+            // Use 80% of scanner width for QR box on mobile, 70% on larger screens
+            return Math.min(scannerWidth * (window.innerWidth < 768 ? 0.8 : 0.7), 250);
+        }
+
         const config = {
             fps: 60,
-            qrbox: 250,
+            qrbox: getQRBoxSize,
             aspectRatio: 1.0,
             videoConstraints: {
                 facingMode: "environment",
                 width: {
-                    ideal: 1920
+                    min: 640,
+                    ideal: 1280,
+                    max: 1920
                 },
                 height: {
-                    ideal: 1080
+                    min: 480,
+                    ideal: 720,
+                    max: 1080
                 },
-                focusMode: "continuous",
-                advanced: [{
-                        focusMode: "continuous"
-                    },
-                    {
-                        focusDistance: 5
-                    },
-                    {
-                        zoom: 2.0
-                    }
-                ]
+                focusMode: "continuous"
             }
         };
+
+        // Update QR box size on window resize
+        window.addEventListener('resize', function() {
+            if (reader && reader.isScanning) {
+                // The qrbox function will be called again automatically
+                // when the scanner restarts
+            }
+        });
 
         Html5Qrcode.getCameras().then(devices => {
             if (devices && devices.length) {
@@ -799,11 +1103,11 @@
                 });
 
             } else {
-                showResult("⚠️ No camera found. Please upload an image instead.", "text-yellow-600");
+                showResult("⚠️ No camera found.", "text-yellow-600");
             }
         }).catch(err => {
             console.error("Camera initialization failed", err);
-            showResult("⚠️ Unable to access camera. Please upload an image instead.", "text-yellow-600");
+            showResult("⚠️ Unable to access camera.", "text-yellow-600");
         });
 
         async function startCamera(deviceId) {
@@ -816,7 +1120,7 @@
                 showStatus("Camera ready. Aim at QR code.", "text-gray-700");
             } catch (err) {
                 console.error("Error starting camera:", err);
-                showResult("⚠️ Failed to start camera. Try uploading an image instead.", "text-yellow-600");
+                showResult("⚠️ Failed to start camera.", "text-yellow-600");
             }
         }
 
@@ -836,13 +1140,8 @@
             }
         }
 
-        // Manual entry functionality (placeholder)
-        document.getElementById('manual-entry-btn').addEventListener('click', function() {
-            const studentId = prompt("Please enter your Student ID:");
-            if (studentId) {
-                processDecodedQRCode(studentId);
-            }
-        });
+        // Initialize dynamic event listeners
+        attachDynamicEventListeners();
     </script>
 </body>
 
