@@ -12,7 +12,6 @@
     {{-- QR Scanner Scripts --}}
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-
     {{-- Google Font --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -438,41 +437,44 @@
 
             <!-- Navigation -->
             @if (Route::has('login'))
-            <nav class="mt-3 md:mt-0 flex flex-wrap gap-2 justify-center md:justify-end">
-                @auth
-                <a
-                    href="{{ url('/admin_dashboard') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                    <span>Dashboard</span>
-                </a>
-                @else
-                <button
-                    id="login-modal-btn"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover float-animation">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                    </svg>
-                    <span>Login</span>
-                </button>
-                @endauth
-            </nav>
+                <nav class="mt-3 md:mt-0 flex flex-wrap gap-2 justify-center md:justify-end">
+                    @auth
+                        <a href="{{ url('/admin_dashboard') }}"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path
+                                    d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+                    @else
+                        <button id="login-modal-btn"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-white bg-gray-100 hover:bg-indigo-600 rounded-lg transition duration-200 flex items-center space-x-1 btn-hover float-animation">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span>Login</span>
+                        </button>
+                    @endauth
+                </nav>
             @endif
         </div>
     </header>
 
     <!-- Authentication Modal -->
     <div id="auth-modal" class="modal-overlay">
-        <div class="modal-content absolute top-1/2 left-1/2 w-full max-w-md bg-white rounded-2xl card-shadow overflow-hidden">
+        <div
+            class="modal-content absolute top-1/2 left-1/2 w-full max-w-md bg-white rounded-2xl card-shadow overflow-hidden">
             <!-- Modal Header -->
             <div class="shimmer-bg px-6 py-4 relative overflow-hidden">
                 <div class="flex items-center justify-between relative z-10">
                     <h3 id="auth-modal-title" class="text-xl font-bold text-white">Login to Dashboard</h3>
                     <button id="close-modal" class="text-white hover:text-indigo-200 transition-colors bounce-hover">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
@@ -492,63 +494,58 @@
 
                     <!-- Email Address -->
                     <div class="mb-4 form-group">
-                        <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input
-                            id="login-email"
-                            type="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
+                        <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email
+                            Address</label>
+                        <input id="login-email" type="email" name="email" value="{{ old('email') }}" required autofocus
                             autocomplete="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
                             placeholder="Enter your email">
                         @error('email')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Password -->
                     <div class="mb-6 form-group">
-                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            id="login-password"
-                            type="password"
-                            name="password"
-                            required
+                        <label for="login-password"
+                            class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input id="login-password" type="password" name="password" required
                             autocomplete="current-password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('password') border-red-500 @enderror"
                             placeholder="Enter your password">
                         @error('password')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Remember Me -->
                     <div class="mb-6 flex items-center justify-between form-group">
                         <label for="remember_me" class="flex items-center cursor-pointer group">
-                            <input
-                                id="remember_me"
-                                type="checkbox"
-                                name="remember"
+                            <input id="remember_me" type="checkbox" name="remember"
                                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition-colors cursor-pointer">
-                            <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Remember me</span>
+                            <span
+                                class="ml-2 text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Remember
+                                me</span>
                         </label>
 
-                        <button type="button" id="show-forgot-password" class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                        <button type="button" id="show-forgot-password"
+                            class="text-sm text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
                             Forgot your password?
                         </button>
                     </div>
 
                     <!-- Submit Button -->
-                    <button
-                        type="submit"
+                    <button type="submit"
                         class="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover form-group"
                         id="login-submit">
                         <span class="flex items-center justify-center">
-                            <svg id="login-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <svg id="login-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
                             </svg>
                             Sign In
                         </span>
@@ -561,77 +558,65 @@
 
                     <!-- Name -->
                     <div class="mb-4 form-group">
-                        <label for="register-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                        <input
-                            id="register-name"
-                            type="text"
-                            name="name"
-                            value="{{ old('name') }}"
-                            required
-                            autofocus
+                        <label for="register-name" class="block text-sm font-medium text-gray-700 mb-2">Full
+                            Name</label>
+                        <input id="register-name" type="text" name="name" value="{{ old('name') }}" required autofocus
                             autocomplete="name"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('name') border-red-500 @enderror"
                             placeholder="Enter your full name">
                         @error('name')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Email Address -->
                     <div class="mb-4 form-group">
-                        <label for="register-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input
-                            id="register-email"
-                            type="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            required
+                        <label for="register-email" class="block text-sm font-medium text-gray-700 mb-2">Email
+                            Address</label>
+                        <input id="register-email" type="email" name="email" value="{{ old('email') }}" required
                             autocomplete="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
                             placeholder="Enter your email">
                         @error('email')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Password -->
                     <div class="mb-4 form-group">
-                        <label for="register-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            id="register-password"
-                            type="password"
-                            name="password"
-                            required
+                        <label for="register-password"
+                            class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input id="register-password" type="password" name="password" required
                             autocomplete="new-password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('password') border-red-500 @enderror"
                             placeholder="Create a password">
                         @error('password')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Confirm Password -->
                     <div class="mb-6 form-group">
-                        <label for="register-password-confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                        <input
-                            id="register-password-confirmation"
-                            type="password"
-                            name="password_confirmation"
-                            required
+                        <label for="register-password-confirmation"
+                            class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                        <input id="register-password-confirmation" type="password" name="password_confirmation" required
                             autocomplete="new-password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus"
                             placeholder="Confirm your password">
                     </div>
 
                     <!-- Submit Button -->
-                    <button
-                        type="submit"
+                    <button type="submit"
                         class="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover form-group"
                         id="register-submit">
                         <span class="flex items-center justify-center">
-                            <svg id="register-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <svg id="register-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
                             </svg>
                             Create Account
                         </span>
@@ -646,38 +631,34 @@
                         <p class="text-sm text-gray-600 mb-4">
                             Enter your email address and we'll send you a link to reset your password.
                         </p>
-                        
-                        <label for="forgot-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input
-                            id="forgot-email"
-                            type="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
+
+                        <label for="forgot-email" class="block text-sm font-medium text-gray-700 mb-2">Email
+                            Address</label>
+                        <input id="forgot-email" type="email" name="email" value="{{ old('email') }}" required autofocus
                             autocomplete="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors input-focus @error('email') border-red-500 @enderror"
                             placeholder="Enter your email">
                         @error('email')
-                        <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600 animate-pulse">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="flex space-x-3 form-group">
-                        <button
-                            type="button"
-                            id="back-to-login"
+                        <button type="button" id="back-to-login"
                             class="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-xl font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors btn-hover">
                             Back to Login
                         </button>
-                        <button
-                            type="submit"
+                        <button type="submit"
                             class="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors btn-hover"
                             id="forgot-submit">
                             <span class="flex items-center justify-center">
-                                <svg id="forgot-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                <svg id="forgot-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
                                 </svg>
                                 Send Reset Link
                             </span>
@@ -690,7 +671,8 @@
             <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 form-group">
                 <p id="auth-footer-text" class="text-sm text-gray-600 text-center">
                     Don't have an account?
-                    <button type="button" id="switch-to-register" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
+                    <button type="button" id="switch-to-register"
+                        class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">
                         Create one here
                     </button>
                 </p>
@@ -703,13 +685,18 @@
         <div class="bg-white/95 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-2xl card-shadow w-full max-w-md mx-auto">
             <!-- Scanner Header -->
             <div class="text-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                <div
+                    class="w-12 h-12 sm:w-16 sm:h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                            clip-rule="evenodd" />
                     </svg>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-800 responsive-text">Scan Your Student ID</h2>
-                <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base responsive-subtext">Position QR code within the frame</p>
+                <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base responsive-subtext">Position QR code within
+                    the frame</p>
             </div>
 
             <!-- Camera Selector -->
@@ -721,8 +708,11 @@
                         <option value="">Loading cameras...</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
                 </div>
@@ -736,16 +726,28 @@
                         class="w-full py-2 sm:py-3 px-3 sm:px-4 pr-8 sm:pr-10 border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white input-focus text-sm sm:text-base">
                         <option value="">Select a subject...</option>
                         @foreach ($subjects as $subject)
-                        <option value="{{ $subject->code }}">
-                            {{ $subject->code }} - {{ $subject->name }}
-                        </option>
+                            <option value="{{ $subject->code }}">
+                                {{ $subject->code }} - {{ $subject->name }}
+                            </option>
                         @endforeach
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
+                </div>
+                <div class="mt-4 flex flex-col items-center space-y-2">
+                    <label for="qr-file-input"
+                        class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow transition">
+                        📁 Upload QR Image
+                    </label>
+                    <input id="qr-file-input" type="file" accept="image/*" class="hidden">
+                    <small class="text-gray-500 text-sm">You can upload a photo of a QR code if camera scanning isn’t
+                        available.</small>
                 </div>
             </div>
 
@@ -756,18 +758,28 @@
                 <div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-indigo-500 animate-scan"></div>
 
                 <!-- Scanner corners -->
-                <div class="absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-l-4 border-indigo-500 rounded-tl-lg"></div>
-                <div class="absolute top-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-r-4 border-indigo-500 rounded-tr-lg"></div>
-                <div class="absolute bottom-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-l-4 border-indigo-500 rounded-bl-lg"></div>
-                <div class="absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-r-4 border-indigo-500 rounded-br-lg"></div>
+                <div
+                    class="absolute top-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-l-4 border-indigo-500 rounded-tl-lg">
+                </div>
+                <div
+                    class="absolute top-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-t-4 border-r-4 border-indigo-500 rounded-tr-lg">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-l-4 border-indigo-500 rounded-bl-lg">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-4 h-4 sm:w-6 sm:h-6 border-b-4 border-r-4 border-indigo-500 rounded-br-lg">
+                </div>
             </div>
 
             <!-- Status -->
             <div id="status" class="mt-4 sm:mt-6 bg-gray-50 rounded-xl p-3 sm:p-4">
                 <div class="flex items-center justify-center space-x-2 sm:space-x-3">
                     <div id="loading-spinner"
-                        class="hidden w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-indigo-500 rounded-full animate-spin"></div>
-                    <span id="status-text" class="text-gray-700 font-medium text-sm sm:text-base">Waiting for QR code...</span>
+                        class="hidden w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 border-t-indigo-500 rounded-full animate-spin">
+                    </div>
+                    <span id="status-text" class="text-gray-700 font-medium text-sm sm:text-base">Waiting for QR
+                        code...</span>
                 </div>
             </div>
 
@@ -855,7 +867,7 @@
         }
 
         function updateModalContent(tabName) {
-            switch(tabName) {
+            switch (tabName) {
                 case 'login':
                     authModalTitle.textContent = 'Login to Dashboard';
                     authFooterText.innerHTML = `Don't have an account? <button type="button" id="switch-to-register" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors hover:underline">Create one here</button>`;
@@ -920,11 +932,11 @@
 
         // Form submission handlers
         function handleFormSubmission(form, submitBtn, spinner) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 spinner.classList.remove('hidden');
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-75');
-                
+
                 // In a real application, you would let the form submit naturally
                 // This timeout is just for visual feedback
                 setTimeout(() => {
@@ -942,11 +954,11 @@
 
         // Enhanced input interactions
         document.querySelectorAll('.input-focus').forEach(input => {
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.parentElement.classList.add('transform', 'scale-105');
             });
 
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 this.parentElement.classList.remove('transform', 'scale-105');
             });
         });
@@ -984,16 +996,16 @@
             }
 
             fetch("{{ route('attendance.scan.post') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        studentno: decodedText,
-                        subject_code: selectedSubject
-                    })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    studentno: decodedText,
+                    subject_code: selectedSubject
                 })
+            })
                 .then(response => response.json())
                 .then(async (data) => {
                     spinner.classList.add("hidden");
@@ -1050,8 +1062,8 @@
         // Responsive QR box configuration
         function getQRBoxSize() {
             const scannerWidth = scannerBox.offsetWidth;
-            // Use 80% of scanner width for QR box on mobile, 70% on larger screens
-            return Math.min(scannerWidth * (window.innerWidth < 768 ? 0.8 : 0.7), 250);
+            const size = Math.min(scannerWidth * (window.innerWidth < 768 ? 0.8 : 0.7), 250);
+            return { width: size, height: size };
         }
 
         const config = {
@@ -1075,7 +1087,7 @@
         };
 
         // Update QR box size on window resize
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (reader && reader.isScanning) {
                 // The qrbox function will be called again automatically
                 // when the scanner restarts
@@ -1112,11 +1124,10 @@
 
         async function startCamera(deviceId) {
             try {
-                await reader.start({
-                    deviceId: {
-                        exact: deviceId
-                    }
-                }, config, onScanSuccess, onScanError);
+                // stop any existing session safely
+                if (reader._isScanning) await reader.stop();
+
+                await reader.start({ deviceId: { exact: deviceId } }, config, onScanSuccess, onScanError);
                 showStatus("Camera ready. Aim at QR code.", "text-gray-700");
             } catch (err) {
                 console.error("Error starting camera:", err);
@@ -1142,6 +1153,50 @@
 
         // Initialize dynamic event listeners
         attachDynamicEventListeners();
+    </script>
+    <script>
+        // 🧩 Image Upload QR Scanning
+        const qrFileInput = document.getElementById("qr-file-input");
+
+        qrFileInput.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showStatus("Processing uploaded image...", "text-indigo-600");
+            spinner.classList.remove("hidden");
+            flashBorder("warning");
+
+            try {
+                // 🧠 Stop camera temporarily to avoid “ongoing scan” conflict
+                try { await reader.stop(); } catch (_) { }
+
+                // ✅ Scan QR code from image (requires html5-qrcode@2.3.9+)
+                const result = await reader.scanFileV2(file, true);
+
+                if (result?.decodedText) {
+                    await processDecodedQRCode(result.decodedText);
+                } else {
+                    flashBorder("error");
+                    showResult("❌ Unable to scan QR from image.", "text-red-600");
+                    showStatus("Invalid or unreadable image.", "text-red-700");
+                }
+
+            } catch (err) {
+                console.error("Image scan failed:", err);
+                flashBorder("error");
+                showResult("❌ Failed to scan image.", "text-red-600");
+                showStatus("Upload a clear image of a valid QR code.", "text-red-700");
+            } finally {
+                spinner.classList.add("hidden");
+                // Restart camera after a short delay
+                setTimeout(async () => {
+                    try { await startCamera(currentCameraId); } catch (_) { }
+                }, 2000);
+            }
+
+            // Reset file input so user can upload again
+            qrFileInput.value = "";
+        });
     </script>
 </body>
 
