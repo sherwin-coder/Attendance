@@ -51,6 +51,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:users',
             'yrsec' => 'nullable|string|max:255',
             'newYrSec' => 'nullable|string|max:255',
+            
         ]);
 
         // Determine final yrsec value
@@ -66,6 +67,7 @@ class StudentController extends Controller
             'studentno' => $request->studentno,
             'email' => $request->email,
             'yrsec' => $yrsec,
+            'role' => 'student',
         ]);
 
         // ✅ Auto-enroll to all subjects using Eloquent
