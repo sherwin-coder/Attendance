@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
   <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
-  
+
   <style>
     * {
       margin: 0;
@@ -20,7 +20,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       overflow: hidden;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -652,6 +653,7 @@
       border-bottom: 1px solid #eaeaea;
       vertical-align: middle;
       color: #495057;
+      font-size: 0.90rem;
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
@@ -806,7 +808,7 @@
     .container-scroller .row {
       margin: 0 !important;
     }
-    
+
     .container-scroller .col-lg-12 {
       padding: 0 !important;
     }
@@ -883,7 +885,7 @@
             </li>
           </ul>
         </nav>
-        
+
         <!-- ===== SIDEBAR TOGGLE BUTTON ===== -->
         <div class="sidebar-toggle">
           <button class="sidebar-toggle-btn" id="sidebarToggle">
@@ -913,10 +915,12 @@
                   <p class="mb-1 fw-semibold">Admin</p>
                   <p class="fw-light text-muted mb-0">admin@attendance.com</p>
                 </div>
-                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
+                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                    class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
                 <form method="POST" action="{{ route('logout') }}" id="logout-form">
                   @csrf
-                  <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <a href="#" class="dropdown-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="mdi mdi-logout me-2 text-primary"></i> Logout
                   </a>
                 </form>
@@ -944,9 +948,9 @@
                     <select name="subject" id="subject" class="form-select" onchange="this.form.submit()">
                       <option value="">All Subjects</option>
                       @foreach($subjects as $subject)
-                      <option value="{{ $subject->id }}" {{ $selectedSubject == $subject->id ? 'selected' : '' }}>
-                        {{ $subject->code }} - {{ $subject->name }}
-                      </option>
+                        <option value="{{ $subject->id }}" {{ $selectedSubject == $subject->id ? 'selected' : '' }}>
+                          {{ $subject->code }} - {{ $subject->name }}
+                        </option>
                       @endforeach
                     </select>
                   </div>
@@ -978,37 +982,64 @@
                   </thead>
                   <tbody>
                     @forelse($logs as $index => $log)
-                    <tr>
-                      <td>{{ $index + 1 }}</td>
-                      <td>{{ $log->user->studentno ?? 'N/A' }}</td>
-                      <td>{{ $log->user->name ?? 'N/A' }}</td>
-                      <td>{{ $log->subject->code ?? 'N/A' }} - {{ $log->subject->name ?? 'N/A' }}</td>
-                      <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
-                      <td>
-                        <span class="badge bg-success">{{ $log->time_in ?? '-' }}</span>
-                      </td>
-                      <td>
-                        <span class="badge bg-info">{{ $log->time_out ?? '-' }}</span>
-                      </td>
-                    </tr>
+                      <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $log->user->studentno ?? 'N/A' }}</td>
+                        <td>{{ $log->user->name ?? 'N/A' }}</td>
+                        <td>{{ $log->subject->code ?? 'N/A' }} - {{ $log->subject->name ?? 'N/A' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($log->date)->format('Y-m-d') }}</td>
+                        <td>
+                          <span class="badge bg-success">{{ $log->time_in ?? '-' }}</span>
+                        </td>
+                        <td>
+                          <span class="badge bg-info">{{ $log->time_out ?? '-' }}</span>
+                        </td>
+                      </tr>
                     @empty
-                    <tr>
-                      <td colspan="7" class="text-center text-muted py-4">
-                        <i class="mdi mdi-information-outline me-2"></i>
-                        No attendance logs found.
-                      </td>
-                    </tr>
+                      <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                          <i class="mdi mdi-information-outline me-2"></i>
+                          No attendance logs found.
+                        </td>
+                      </tr>
                     @endforelse
                   </tbody>
                 </table>
               </div>
 
               <!-- Pagination -->
-              @if($logs->hasPages())
-              <div class="d-flex justify-content-center mt-4">
-                {{ $logs->appends(['subject' => $selectedSubject])->links() }}
-              </div>
+              @if ($logs->hasPages())
+                <div class="d-flex justify-content-center mt-4">
+                  <nav>
+                    <ul class="pagination pagination-simple">
+                      {{-- Previous Page Link --}}
+                      @if ($logs->onFirstPage())
+                        <li class="page-item disabled" aria-disabled="true" aria-label="Previous">
+                          <span class="page-link">&laquo; Previous</span>
+                        </li>
+                      @else
+                        <li class="page-item">
+                          <a class="page-link" href="{{ $logs->previousPageUrl() }}" rel="prev"
+                            aria-label="Previous">&laquo; Previous</a>
+                        </li>
+                      @endif
+
+                      {{-- Next Page Link --}}
+                      @if ($logs->hasMorePages())
+                        <li class="page-item">
+                          <a class="page-link" href="{{ $logs->nextPageUrl() }}" rel="next" aria-label="Next">Next
+                            &raquo;</a>
+                        </li>
+                      @else
+                        <li class="page-item disabled" aria-disabled="true" aria-label="Next">
+                          <span class="page-link">Next &raquo;</span>
+                        </li>
+                      @endif
+                    </ul>
+                  </nav>
+                </div>
               @endif
+
             </div>
           </div>
 
@@ -1033,24 +1064,24 @@
 
   <!-- Sidebar Toggle Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const sidebar = document.getElementById('sidebar');
       const sidebarToggle = document.getElementById('sidebarToggle');
-      
+
       // Desktop sidebar toggle functionality
       if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
+        sidebarToggle.addEventListener('click', function () {
           sidebar.classList.toggle('minimized');
           updateToggleButton();
         });
       }
-      
+
       // Update toggle button text and icon based on sidebar state
       function updateToggleButton() {
         if (sidebarToggle) {
           const toggleText = sidebarToggle.querySelector('.toggle-text');
           const toggleIcon = sidebarToggle.querySelector('.toggle-icon');
-          
+
           if (sidebar.classList.contains('minimized')) {
             toggleText.textContent = 'Expand Menu';
             toggleIcon.className = 'mdi mdi-arrow-right toggle-icon';
@@ -1060,13 +1091,13 @@
           }
         }
       }
-      
+
       // Close sidebar when clicking outside on mobile
-      document.addEventListener('click', function(event) {
+      document.addEventListener('click', function (event) {
         if (window.innerWidth < 992) {
           const isClickInsideSidebar = sidebar.contains(event.target);
           const isClickOnMobileToggle = mobileToggle.contains(event.target);
-          
+
           if (!isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('active')) {
             sidebar.classList.remove('active');
           }
@@ -1078,4 +1109,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -20,10 +20,21 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       overflow: hidden;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-group input {
+      flex: 1;
     }
 
     /* ===== MAIN LAYOUT CONTAINER ===== */
@@ -684,6 +695,7 @@
       border-bottom: 1px solid #eaeaea;
       vertical-align: middle;
       color: #495057;
+      font-size: 0.90rem;
     }
 
     .table-striped tbody tr:nth-of-type(odd) {
@@ -895,7 +907,7 @@
     .container-scroller .row {
       margin: 0 !important;
     }
-    
+
     .container-scroller .col-lg-12 {
       padding: 0 !important;
     }
@@ -968,11 +980,11 @@
               <a class="nav-link" href="{{ route('newadmin') }}">
                 <i class="mdi mdi-cog menu-icon"></i>
                 <span class="menu-title">Admin Settings</span>
-              </a>  
+              </a>
             </li>
           </ul>
         </nav>
-        
+
         <!-- ===== SIDEBAR TOGGLE BUTTON ===== -->
         <div class="sidebar-toggle">
           <button class="sidebar-toggle-btn" id="sidebarToggle">
@@ -983,7 +995,7 @@
       </div>
     </aside>
 
-        <!-- ===== MAIN CONTENT WRAPPER ===== -->
+    <!-- ===== MAIN CONTENT WRAPPER ===== -->
     <div class="navbar-wrapper">
       <!-- ===== NAVBAR ===== -->
       <nav class="navbar">
@@ -1002,10 +1014,12 @@
                   <p class="mb-1 fw-semibold">Admin</p>
                   <p class="fw-light text-muted mb-0">admin@attendance.com</p>
                 </div>
-                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
+                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                    class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
                 <form method="POST" action="{{ route('logout') }}" id="logout-form">
                   @csrf
-                  <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <a href="#" class="dropdown-item"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="mdi mdi-logout me-2 text-primary"></i> Logout
                   </a>
                 </form>
@@ -1025,21 +1039,21 @@
 
           <!-- Flash Messages -->
           @if(session('success'))
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ session('success') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
           @endif
 
           @if($errors->any())
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul class="mb-0">
-              @foreach($errors->all() as $error)
-              <li>{{ $error }}</li>
-              @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
           @endif
 
           <!-- Action Buttons and Search -->
@@ -1054,11 +1068,13 @@
                 <div class="col-md-6">
                   <form method="GET" action="{{ route('students.index') }}">
                     <div class="input-group">
-                      <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request('search') }}">
+                      <input type="text" name="search" class="form-control me-2" placeholder="Search by name or ID"
+                        value="{{ request('search') }}">
                       <button type="submit" class="btn btn-outline-primary">
                         <i class="mdi mdi-magnify"></i> Search
                       </button>
                     </div>
+
                   </form>
                 </div>
               </div>
@@ -1082,60 +1098,84 @@
                   </thead>
                   <tbody>
                     @foreach($students as $index => $student)
-                    <tr>
-                      <td>{{ $index + 1 }}</td>
-                      <td>
-                        <span class="fw-semibold text-primary">{{ $student->studentno }}</span>
-                      </td>
-                      <td>{{ $student->name }}</td>
-                      <td>{{ $student->email }}</td>
-                      <td>
-                        <span class="badge bg-info text-dark">{{ $student->yrsec }}</span>
-                      </td>
-                      <td>
-                        <div class="action-buttons">
-                          <button class="btn btn-sm btn-warning edit-student-btn" 
-                                  data-bs-toggle="modal" 
-                                  data-bs-target="#editStudentModal"
-                                  data-id="{{ $student->id }}"
-                                  data-studentno="{{ $student->studentno }}"
-                                  data-name="{{ $student->name }}"
-                                  data-email="{{ $student->email }}"
-                                  data-yrsec="{{ $student->yrsec }}">
-                            <i class="mdi mdi-pencil me-1"></i>Edit
-                          </button>
-                          <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this student?')">
-                              <i class="mdi mdi-delete me-1"></i>Delete
+                      <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>
+                          <span class="fw-semibold text-primary">{{ $student->studentno }}</span>
+                        </td>
+                        <td>{{ $student->name }}</td>
+                        <td>{{ $student->email }}</td>
+                        <td>
+                          <span class="badge bg-info text-dark">{{ $student->yrsec }}</span>
+                        </td>
+                        <td>
+                          <div class="action-buttons">
+                            <button class="btn btn-sm btn-warning edit-student-btn" data-bs-toggle="modal"
+                              data-bs-target="#editStudentModal" data-id="{{ $student->id }}"
+                              data-studentno="{{ $student->studentno }}" data-name="{{ $student->name }}"
+                              data-email="{{ $student->email }}" data-yrsec="{{ $student->yrsec }}">
+                              <i class="mdi mdi-pencil me-1"></i>Edit
                             </button>
-                          </form>
-                        </div>
-                      </td>
-                    </tr>
+                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this student?')">
+                                <i class="mdi mdi-delete me-1"></i>Delete
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
                     @endforeach
                   </tbody>
                 </table>
               </div>
 
               <!-- Pagination -->
-              @if($students->hasPages())
-              <div class="d-flex justify-content-center mt-4">
-                {{ $students->links() }}
-              </div>
+              @if ($students->hasPages())
+                <div class="d-flex justify-content-center mt-4">
+                  <nav>
+                    <ul class="pagination pagination-simple">
+                      {{-- Previous Page Link --}}
+                      @if ($students->onFirstPage())
+                        <li class="page-item disabled" aria-disabled="true" aria-label="Previous">
+                          <span class="page-link">&laquo; Previous</span>
+                        </li>
+                      @else
+                        <li class="page-item">
+                          <a class="page-link" href="{{ $students->previousPageUrl() }}" rel="prev"
+                            aria-label="Previous">&laquo; Previous</a>
+                        </li>
+                      @endif
+
+                      {{-- Next Page Link --}}
+                      @if ($students->hasMorePages())
+                        <li class="page-item">
+                          <a class="page-link" href="{{ $students->nextPageUrl() }}" rel="next" aria-label="Next">Next
+                            &raquo;</a>
+                        </li>
+                      @else
+                        <li class="page-item disabled" aria-disabled="true" aria-label="Next">
+                          <span class="page-link">Next &raquo;</span>
+                        </li>
+                      @endif
+                    </ul>
+                  </nav>
+                </div>
               @endif
+
 
               <!-- Empty State -->
               @if($students->count() == 0)
-              <div class="empty-state">
-                <i class="mdi mdi-account-off empty-state-icon"></i>
-                <h4 class="text-muted mt-3">No students found</h4>
-                <p class="text-muted">No student records match your search criteria.</p>
-                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                  <i class="mdi mdi-account-plus me-2"></i>Add First Student
-                </button>
-              </div>
+                <div class="empty-state">
+                  <i class="mdi mdi-account-off empty-state-icon"></i>
+                  <h4 class="text-muted mt-3">No students found</h4>
+                  <p class="text-muted">No student records match your search criteria.</p>
+                  <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                    <i class="mdi mdi-account-plus me-2"></i>Add First Student
+                  </button>
+                </div>
               @endif
             </div>
           </div>
@@ -1186,7 +1226,8 @@
                 @endforeach
                 <option value="add_new">+ Add New Year & Section</option>
               </select>
-              <input type="text" id="add_newYrSec" name="newYrSec" class="form-control mt-2 new-yrsec-input" placeholder="Enter new Year & Section (e.g., BSIT-4D)" style="display:none;">
+              <input type="text" id="add_newYrSec" name="newYrSec" class="form-control mt-2 new-yrsec-input"
+                placeholder="Enter new Year & Section (e.g., BSIT-4D)" style="display:none;">
             </div>
           </div>
           <div class="modal-footer">
@@ -1199,7 +1240,8 @@
   </div>
 
   <!-- Edit Student Modal -->
-  <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -1232,7 +1274,8 @@
                 @endforeach
                 <option value="add_new">+ Add New Year & Section</option>
               </select>
-              <input type="text" id="edit_newYrSec" name="newYrSec" class="form-control mt-2 new-yrsec-input" placeholder="Enter new Year & Section (e.g., BSIT-4D)" style="display:none;">
+              <input type="text" id="edit_newYrSec" name="newYrSec" class="form-control mt-2 new-yrsec-input"
+                placeholder="Enter new Year & Section (e.g., BSIT-4D)" style="display:none;">
             </div>
           </div>
           <div class="modal-footer">
@@ -1250,24 +1293,24 @@
   <script src="{{ asset('assets/js/template.js') }}"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const sidebar = document.getElementById('sidebar');
       const sidebarToggle = document.getElementById('sidebarToggle');
-      
+
       // Desktop sidebar toggle functionality
       if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
+        sidebarToggle.addEventListener('click', function () {
           sidebar.classList.toggle('minimized');
           updateToggleButton();
         });
       }
-      
+
       // Update toggle button text and icon based on sidebar state
       function updateToggleButton() {
         if (sidebarToggle) {
           const toggleText = sidebarToggle.querySelector('.toggle-text');
           const toggleIcon = sidebarToggle.querySelector('.toggle-icon');
-          
+
           if (sidebar.classList.contains('minimized')) {
             toggleText.textContent = 'Expand Menu';
             toggleIcon.className = 'mdi mdi-arrow-right toggle-icon';
@@ -1284,7 +1327,7 @@
       // Edit Student Modal Functionality
       const editButtons = document.querySelectorAll('.edit-student-btn');
       editButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           const studentId = this.getAttribute('data-id');
           const studentNo = this.getAttribute('data-studentno');
           const name = this.getAttribute('data-name');
@@ -1296,12 +1339,12 @@
           document.getElementById('edit_studentno').value = studentNo;
           document.getElementById('edit_name').value = name;
           document.getElementById('edit_email').value = email;
-          
+
           // Set Year & Section - check if it exists in dropdown, otherwise show input
           const yrsecSelect = document.getElementById('edit_yrsec');
           const yrsecInput = document.getElementById('edit_newYrSec');
           let foundInDropdown = false;
-          
+
           for (let i = 0; i < yrsecSelect.options.length; i++) {
             if (yrsecSelect.options[i].value === yrsec) {
               yrsecSelect.value = yrsec;
@@ -1309,7 +1352,7 @@
               break;
             }
           }
-          
+
           if (!foundInDropdown && yrsec) {
             yrsecSelect.value = 'add_new';
             yrsecInput.value = yrsec;
@@ -1352,10 +1395,10 @@
       });
 
       // Form submission validation
-      document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+      document.getElementById('addStudentForm').addEventListener('submit', function (e) {
         const yrsecSelect = document.getElementById('add_yrsec');
         const yrsecInput = document.getElementById('add_newYrSec');
-        
+
         // If "Add New" is selected but input is empty, prevent submission
         if (yrsecSelect.value === 'add_new' && !yrsecInput.value.trim()) {
           e.preventDefault();
@@ -1365,10 +1408,10 @@
         }
       });
 
-      document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+      document.getElementById('editStudentForm').addEventListener('submit', function (e) {
         const yrsecSelect = document.getElementById('edit_yrsec');
         const yrsecInput = document.getElementById('edit_newYrSec');
-        
+
         // If "Add New" is selected but input is empty, prevent submission
         if (yrsecSelect.value === 'add_new' && !yrsecInput.value.trim()) {
           e.preventDefault();
@@ -1392,7 +1435,7 @@
     function checkNewYrSec(select, formType) {
       const inputId = formType === 'add' ? 'add_newYrSec' : 'edit_newYrSec';
       const input = document.getElementById(inputId);
-      
+
       if (select.value === 'add_new') {
         input.style.display = 'block';
         input.required = true;
@@ -1408,4 +1451,5 @@
     }
   </script>
 </body>
+
 </html>

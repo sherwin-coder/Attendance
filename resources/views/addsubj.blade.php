@@ -668,6 +668,7 @@
       padding: 12px 15px;
       border-bottom: 1px solid #eaeaea;
       vertical-align: middle;
+      font-size: 0.90rem;
     }
 
     .table-striped tbody tr:nth-of-type(odd) {

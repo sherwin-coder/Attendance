@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
-    
+
     <style>
         * {
             margin: 0;
@@ -20,7 +20,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -526,6 +527,41 @@
             min-height: calc(100vh - 140px);
         }
 
+        /* ===== TABLE STYLES ===== */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            border-bottom: 2px solid #eaeaea;
+            padding: 15px;
+            font-size: 0.95rem;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #eaeaea;
+            vertical-align: middle;
+            color: #495057;
+            font-size: 0.90rem;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(75, 73, 172, 0.05);
+            transform: translateY(-1px);
+            transition: all 0.3s ease;
+        }
+
         /* ===== MODERN CARD DESIGN ===== */
         .card {
             border: none !important;
@@ -728,83 +764,83 @@
         .container-scroller .row {
             margin: 0 !important;
         }
-        
+
         .container-scroller .col-lg-12 {
             padding: 0 !important;
         }
-        
+
         .container-scroller .pt-3 {
             padding-top: 1rem !important;
         }
-        
+
         .container-scroller .mt-4 {
             margin-top: 1.5rem !important;
         }
-        
+
         .container-scroller .me-3 {
             margin-right: 1rem !important;
         }
-        
+
         .container-scroller .me-2 {
             margin-right: 0.5rem !important;
         }
-        
+
         .container-scroller .border-top {
             border-top: 1px solid #dee2e6 !important;
         }
-        
+
         .container-scroller .text-muted {
             color: #6c757d !important;
         }
-        
+
         .container-scroller .fw-semibold {
             font-weight: 600 !important;
         }
-        
+
         .container-scroller .fw-light {
             font-weight: 300 !important;
         }
-        
+
         .container-scroller .text-primary {
             color: #4B49AC !important;
         }
-        
+
         .container-scroller .d-sm-flex {
             display: flex !important;
         }
-        
+
         .container-scroller .justify-content-center {
             justify-content: center !important;
         }
-        
+
         .container-scroller .justify-content-sm-between {
             justify-content: space-between !important;
         }
-        
+
         .container-scroller .d-block {
             display: block !important;
         }
-        
+
         .container-scroller .d-sm-inline-block {
             display: inline-block !important;
         }
-        
+
         .container-scroller .float-none {
             float: none !important;
         }
-        
+
         .container-scroller .float-sm-end {
             float: right !important;
         }
-        
+
         .container-scroller .mt-1 {
             margin-top: 0.25rem !important;
         }
-        
+
         .container-scroller .mt-sm-0 {
             margin-top: 0 !important;
         }
-        
+
         .container-scroller .text-center {
             text-align: center !important;
         }
@@ -881,7 +917,7 @@
                         </li>
                     </ul>
                 </nav>
-                
+
                 <!-- ===== SIDEBAR TOGGLE BUTTON ===== -->
                 <div class="sidebar-toggle">
                     <button class="sidebar-toggle-btn" id="sidebarToggle">
@@ -903,18 +939,22 @@
                     <div class="navbar-right">
                         <div class="user-dropdown">
                             <a class="user-dropdown-toggle" id="UserDropdown" href="#" data-bs-toggle="dropdown">
-                                <img class="user-avatar" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="Profile image">
+                                <img class="user-avatar" src="{{ asset('assets/images/faces/face8.jpg') }}"
+                                    alt="Profile image">
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="UserDropdown">
                                 <div class="dropdown-header text-center">
-                                    <img class="dropdown-avatar" src="{{ asset('assets/images/faces/face8.jpg') }}" alt="Profile image">
+                                    <img class="dropdown-avatar" src="{{ asset('assets/images/faces/face8.jpg') }}"
+                                        alt="Profile image">
                                     <p class="mb-1 fw-semibold">Admin</p>
                                     <p class="fw-light text-muted mb-0">admin@attendance.com</p>
                                 </div>
-                                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                                        class="mdi mdi-account-outline me-2 text-primary"></i>Profile</a>
                                 <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                     @csrf
-                                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <a href="#" class="dropdown-item"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <i class="mdi mdi-logout me-2 text-primary"></i> Logout
                                     </a>
                                 </form>
@@ -932,12 +972,13 @@
                             <div class="card">
                                 <div class="card-body">
                                     @if (session('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
+                                        <div class="alert alert-success">{{ session('success') }}</div>
                                     @endif
 
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h4 class="card-title fw-bold text-dark">Student Tasks</h4>
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                                        <button class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#addTaskModal">
                                             <i class="mdi mdi-plus"></i> Add Task
                                         </button>
                                     </div>
@@ -948,9 +989,9 @@
                                         <select class="form-select" id="subjectFilter">
                                             <option selected disabled>Select Subject</option>
                                             @foreach ($subjects as $subject)
-                                            <option value="{{ $subject->code }}">
-                                                {{ $subject->code }} - {{ $subject->name }}
-                                            </option>
+                                                <option value="{{ $subject->code }}">
+                                                    {{ $subject->code }} - {{ $subject->name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -970,36 +1011,44 @@
                                             </thead>
                                             <tbody id="taskTableBody">
                                                 @foreach ($tasks as $task)
-                                                <tr data-id="{{ $task->id }}">
-                                                    <td>{{ $task->title }}</td>
-                                                    <td>{{ $task->type }}</td>
-                                                    <td>{{ $task->subject_code }} - {{ $task->subject->name ?? '' }}</td>
-                                                    <td>{{ $task->due_date }}</td>
-                                                    <td>
-                                                        <span class="badge {{ $task->status == 'Completed' ? 'bg-success' : 'bg-warning text-dark' }}">
-                                                            {{ $task->status }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex gap-1">
-                                                            <button class="btn btn-sm btn-info view-btn" data-id="{{ $task->id }}" data-mode="view" data-bs-toggle="modal" data-bs-target="#scoreModal">
-                                                                <i class="mdi mdi-eye"></i>
-                                                            </button>
-
-                                                            <button class="btn btn-sm btn-warning edit-btn" data-id="{{ $task->id }}" data-mode="edit" data-bs-toggle="modal" data-bs-target="#scoreModal">
-                                                                <i class="mdi mdi-pencil"></i>
-                                                            </button>
-
-                                                            <form action="{{ route('tasks.destroy', $task->id ) }}" method="POST" onsubmit="return confirm('Delete this task?')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button class="btn btn-sm btn-danger">
-                                                                    <i class="mdi mdi-delete"></i>
+                                                    <tr data-id="{{ $task->id }}">
+                                                        <td>{{ $task->title }}</td>
+                                                        <td>{{ $task->type }}</td>
+                                                        <td>{{ $task->subject_code }} - {{ $task->subject->name ?? '' }}
+                                                        </td>
+                                                        <td>{{ $task->due_date }}</td>
+                                                        <td>
+                                                            <span
+                                                                class="badge {{ $task->status == 'Completed' ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                                {{ $task->status }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex gap-1">
+                                                                <button class="btn btn-sm btn-info view-btn"
+                                                                    data-id="{{ $task->id }}" data-mode="view"
+                                                                    data-bs-toggle="modal" data-bs-target="#scoreModal">
+                                                                    <i class="mdi mdi-eye"></i>
                                                                 </button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+
+                                                                <button class="btn btn-sm btn-warning edit-btn"
+                                                                    data-id="{{ $task->id }}" data-mode="edit"
+                                                                    data-bs-toggle="modal" data-bs-target="#scoreModal">
+                                                                    <i class="mdi mdi-pencil"></i>
+                                                                </button>
+
+                                                                <form action="{{ route('tasks.destroy', $task->id) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Delete this task?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button class="btn btn-sm btn-danger">
+                                                                        <i class="mdi mdi-delete"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -1049,9 +1098,9 @@
                             <select name="subject_code" class="form-select" required>
                                 <option value="">Select Subject</option>
                                 @foreach ($subjects as $subject)
-                                <option value="{{ $subject->code }}">
-                                    {{ $subject->code }} - {{ $subject->name }}
-                                </option>
+                                    <option value="{{ $subject->code }}">
+                                        {{ $subject->code }} - {{ $subject->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -1112,7 +1161,7 @@
                                     <select id="newStudentSelect" class="form-select" style="color: black;">
                                         <option value="">-- Choose Student --</option>
                                         @foreach(App\Models\User::all() as $student)
-                                        <option value="{{ $student->id }}">{{ $student->name }}</option>
+                                            <option value="{{ $student->id }}">{{ $student->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -1145,24 +1194,24 @@
     <script src="{{ asset('assets/js/template.js') }}"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('sidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
-            
+
             // Desktop sidebar toggle functionality
             if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
+                sidebarToggle.addEventListener('click', function () {
                     sidebar.classList.toggle('minimized');
                     updateToggleButton();
                 });
             }
-            
+
             // Update toggle button text and icon based on sidebar state
             function updateToggleButton() {
                 if (sidebarToggle) {
                     const toggleText = sidebarToggle.querySelector('.toggle-text');
                     const toggleIcon = sidebarToggle.querySelector('.toggle-icon');
-                    
+
                     if (sidebar.classList.contains('minimized')) {
                         toggleText.textContent = 'Expand Menu';
                         toggleIcon.className = 'mdi mdi-arrow-right toggle-icon';
@@ -1172,13 +1221,13 @@
                     }
                 }
             }
-            
+
             // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 if (window.innerWidth < 992) {
                     const isClickInsideSidebar = sidebar.contains(event.target);
                     const isClickOnMobileToggle = mobileToggle.contains(event.target);
-                    
+
                     if (!isClickInsideSidebar && !isClickOnMobileToggle && sidebar.classList.contains('active')) {
                         sidebar.classList.remove('active');
                     }
@@ -1192,7 +1241,7 @@
             const csrfToken = '{{ csrf_token() }}';
 
             // Filter tasks by subject
-            document.getElementById('subjectFilter').addEventListener('change', function() {
+            document.getElementById('subjectFilter').addEventListener('change', function () {
                 const code = this.value;
                 fetch(`/tasks/filter?subject_code=${code}`)
                     .then(res => res.json())
@@ -1276,15 +1325,15 @@
                 }));
 
                 fetch(`/tasks/${taskId}/scores`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            scores
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        scores
                     })
+                })
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -1304,11 +1353,11 @@
             markCompleteBtn.addEventListener('click', () => {
                 const taskId = document.getElementById('taskId').value;
                 fetch(`/tasks/${taskId}/complete`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        }
-                    })
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
                     .then(res => res.json())
                     .then(() => {
                         alert('Task marked as completed.');
@@ -1332,16 +1381,16 @@
                 }
 
                 fetch(`/tasks/${taskId}/scores/add`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            user_id: userId,
-                            score
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        score
                     })
+                })
                     .then(res => res.json())
                     .then(data => {
                         if (data.error) {
@@ -1368,4 +1417,5 @@
         });
     </script>
 </body>
+
 </html>
